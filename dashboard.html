@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Genre Yield Dashboard</title>
+<title>Genre Yield — Dashboard</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
+<div class="grain"></div>
+<div class="scroll-progress"></div>
+
 <nav class="site-nav">
-  <span class="brand">Genre Yield</span>
+  <span class="brand"><span class="dot">●</span> GENRE YIELD</span>
   <div class="links">
     <a href="index.html">Report</a>
     <a href="dashboard.html" class="active">Dashboard</a>
@@ -20,47 +23,49 @@
 
   <header class="dashboard-header">
     <h1>Explore the data</h1>
-    <p>Filter by genre, decade, language, and financial reporting. Every number and chart below recomputes from the filtered rows.</p>
+    <p>Filter by genre, decade, language, and financial reporting. Every number and chart recomputes live.</p>
   </header>
 
   <section class="filter-bar" id="filters">
-    <div class="filter-field">
-      <label for="filter-genre">Genre</label>
-      <select id="filter-genre" data-filter="genre"><option value="">All genres</option></select>
+    <div class="filter-group">
+      <span class="filter-label">Genre</span>
+      <select id="filter-genre" class="select-field"><option value="">All genres</option></select>
     </div>
-    <div class="filter-field">
-      <label for="filter-decade">Decade</label>
-      <select id="filter-decade" data-filter="decade"><option value="">All decades</option></select>
+    <div class="filter-group">
+      <span class="filter-label">Decade</span>
+      <div class="pill-group" id="filter-decade" data-filter="decade">
+        <button class="pill active" data-value="">All</button>
+      </div>
     </div>
-    <div class="filter-field">
-      <label for="filter-language">Original language</label>
-      <select id="filter-language" data-filter="language"><option value="">All languages</option></select>
+    <div class="filter-group">
+      <span class="filter-label">Original language</span>
+      <select id="filter-language" class="select-field"><option value="">All languages</option></select>
     </div>
-    <div class="filter-field">
-      <label for="filter-financial">Financial data</label>
-      <select id="filter-financial" data-filter="financial">
-        <option value="">All movies</option>
-        <option value="yes">Only with reported budget &amp; revenue</option>
-      </select>
+    <div class="filter-group">
+      <span class="filter-label">Financial data</span>
+      <div class="pill-group" id="filter-financial" data-filter="financial">
+        <button class="pill active" data-value="">All movies</button>
+        <button class="pill" data-value="yes">Reported only</button>
+      </div>
     </div>
     <button class="btn-reset" id="reset-filters">Reset filters</button>
   </section>
 
   <section class="stat-row" id="summary-stats">
     <div class="stat-tile">
-      <div class="value" id="stat-count">—</div>
+      <div class="value" id="stat-count">0</div>
       <div class="label">Movies shown</div>
     </div>
     <div class="stat-tile">
-      <div class="value" id="stat-rating">—</div>
+      <div class="value" id="stat-rating">0.00</div>
       <div class="label">Average rating</div>
     </div>
     <div class="stat-tile">
-      <div class="value" id="stat-popularity">—</div>
+      <div class="value" id="stat-popularity">0.0</div>
       <div class="label">Average popularity</div>
     </div>
     <div class="stat-tile">
-      <div class="value" id="stat-yield">—</div>
+      <div class="value" id="stat-yield">0.00x</div>
       <div class="label">Median yield (rev ÷ budget)</div>
     </div>
   </section>
@@ -69,70 +74,70 @@
 
     <div class="chart-card">
       <div class="chart-controls">
-        <select data-role="measure" data-chart="1">
+        <select class="select-field" data-role="measure" data-chart="1">
           <option value="count">Count</option>
           <option value="total_revenue">Total revenue</option>
           <option value="avg_rating">Average rating</option>
           <option value="median_yield">Median yield</option>
         </select>
-        <select data-role="breakdown" data-chart="1">
+        <select class="select-field" data-role="breakdown" data-chart="1">
           <option value="genre">By genre</option>
           <option value="decade">By decade</option>
           <option value="language">By language</option>
           <option value="rating_tier">By rating tier</option>
         </select>
       </div>
-      <canvas id="chart-1"></canvas>
+      <div class="echart" id="chart-1"></div>
     </div>
 
     <div class="chart-card">
       <div class="chart-controls">
-        <select data-role="measure" data-chart="2">
+        <select class="select-field" data-role="measure" data-chart="2">
           <option value="total_revenue">Total revenue</option>
           <option value="count">Count</option>
           <option value="avg_rating">Average rating</option>
           <option value="median_yield">Median yield</option>
         </select>
-        <select data-role="breakdown" data-chart="2">
+        <select class="select-field" data-role="breakdown" data-chart="2">
           <option value="decade">By decade</option>
           <option value="genre">By genre</option>
           <option value="language">By language</option>
           <option value="rating_tier">By rating tier</option>
         </select>
       </div>
-      <canvas id="chart-2"></canvas>
+      <div class="echart" id="chart-2"></div>
     </div>
 
     <div class="chart-card">
       <div class="chart-controls">
-        <select data-role="measure" data-chart="3">
+        <select class="select-field" data-role="measure" data-chart="3">
           <option value="avg_rating">Average rating</option>
           <option value="count">Count</option>
           <option value="total_revenue">Total revenue</option>
           <option value="median_yield">Median yield</option>
         </select>
-        <select data-role="breakdown" data-chart="3">
+        <select class="select-field" data-role="breakdown" data-chart="3">
           <option value="language">By language</option>
           <option value="genre">By genre</option>
           <option value="decade">By decade</option>
           <option value="rating_tier">By rating tier</option>
         </select>
       </div>
-      <canvas id="chart-3"></canvas>
+      <div class="echart" id="chart-3"></div>
     </div>
 
     <div class="chart-card">
       <div class="chart-controls">
-        <select id="bubble-groupby">
+        <select class="select-field" id="bubble-groupby">
           <option value="genre">Group by genre</option>
           <option value="language">Group by language</option>
         </select>
-        <select id="bubble-sizeby">
+        <select class="select-field" id="bubble-sizeby">
           <option value="count">Bubble size: number of movies</option>
           <option value="median_yield">Bubble size: median yield</option>
         </select>
       </div>
-      <canvas id="chart-4"></canvas>
+      <div class="echart" id="chart-4"></div>
     </div>
 
   </section>
@@ -148,9 +153,15 @@
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="js/data.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/dashboard.js"></script>
 </body>
 </html>
