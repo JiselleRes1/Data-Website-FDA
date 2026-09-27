@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
+<title>Genre Yield Dashboard</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <nav class="site-nav">
-  <span class="brand">TODO: Project Name</span>
+  <span class="brand">Genre Yield</span>
   <div class="links">
     <a href="index.html">Report</a>
     <a href="dashboard.html" class="active">Dashboard</a>
@@ -20,63 +20,66 @@
 
   <header class="dashboard-header">
     <h1>Explore the data</h1>
-    <p>Filter, switch measures, and see the numbers change. TODO: adjust description once dataset is chosen.</p>
+    <p>Filter by genre, decade, language, and financial reporting. Every number and chart below recomputes from the filtered rows.</p>
   </header>
 
-  <!-- Filters: at least 4 variables, including the time column and the group column -->
   <section class="filter-bar" id="filters">
     <div class="filter-field">
-      <label for="filter-time">TODO: Time column</label>
-      <select id="filter-time"><option value="">All</option></select>
+      <label for="filter-genre">Genre</label>
+      <select id="filter-genre" data-filter="genre"><option value="">All genres</option></select>
     </div>
     <div class="filter-field">
-      <label for="filter-group">TODO: Group column</label>
-      <select id="filter-group"><option value="">All</option></select>
+      <label for="filter-decade">Decade</label>
+      <select id="filter-decade" data-filter="decade"><option value="">All decades</option></select>
     </div>
     <div class="filter-field">
-      <label for="filter-cat1">TODO: Categorical variable 3</label>
-      <select id="filter-cat1"><option value="">All</option></select>
+      <label for="filter-language">Original language</label>
+      <select id="filter-language" data-filter="language"><option value="">All languages</option></select>
     </div>
     <div class="filter-field">
-      <label for="filter-cat2">TODO: Categorical/numeric variable 4</label>
-      <select id="filter-cat2"><option value="">All</option></select>
+      <label for="filter-financial">Financial data</label>
+      <select id="filter-financial" data-filter="financial">
+        <option value="">All movies</option>
+        <option value="yes">Only with reported budget &amp; revenue</option>
+      </select>
     </div>
     <button class="btn-reset" id="reset-filters">Reset filters</button>
   </section>
 
-  <!-- Summary numbers: at least 4, update with filters -->
   <section class="stat-row" id="summary-stats">
     <div class="stat-tile">
-      <div class="value" id="stat-1">—</div>
-      <div class="label">TODO summary 1</div>
+      <div class="value" id="stat-count">—</div>
+      <div class="label">Movies shown</div>
     </div>
     <div class="stat-tile">
-      <div class="value" id="stat-2">—</div>
-      <div class="label">TODO summary 2</div>
+      <div class="value" id="stat-rating">—</div>
+      <div class="label">Average rating</div>
     </div>
     <div class="stat-tile">
-      <div class="value" id="stat-3">—</div>
-      <div class="label">TODO summary 3</div>
+      <div class="value" id="stat-popularity">—</div>
+      <div class="label">Average popularity</div>
     </div>
     <div class="stat-tile">
-      <div class="value" id="stat-4">—</div>
-      <div class="label">TODO summary 4</div>
+      <div class="value" id="stat-yield">—</div>
+      <div class="label">Median yield (rev ÷ budget)</div>
     </div>
   </section>
 
-  <!-- Charts: at least 4, each with a measure switch and a breakdown switch -->
   <section class="chart-grid" id="charts">
 
     <div class="chart-card">
       <div class="chart-controls">
         <select data-role="measure" data-chart="1">
           <option value="count">Count</option>
-          <option value="total">Total</option>
-          <option value="median">Median</option>
-          <option value="rate">Rate</option>
+          <option value="total_revenue">Total revenue</option>
+          <option value="avg_rating">Average rating</option>
+          <option value="median_yield">Median yield</option>
         </select>
         <select data-role="breakdown" data-chart="1">
-          <option value="">TODO: breakdown by...</option>
+          <option value="genre">By genre</option>
+          <option value="decade">By decade</option>
+          <option value="language">By language</option>
+          <option value="rating_tier">By rating tier</option>
         </select>
       </div>
       <canvas id="chart-1"></canvas>
@@ -85,13 +88,16 @@
     <div class="chart-card">
       <div class="chart-controls">
         <select data-role="measure" data-chart="2">
+          <option value="total_revenue">Total revenue</option>
           <option value="count">Count</option>
-          <option value="total">Total</option>
-          <option value="median">Median</option>
-          <option value="rate">Rate</option>
+          <option value="avg_rating">Average rating</option>
+          <option value="median_yield">Median yield</option>
         </select>
         <select data-role="breakdown" data-chart="2">
-          <option value="">TODO: breakdown by...</option>
+          <option value="decade">By decade</option>
+          <option value="genre">By genre</option>
+          <option value="language">By language</option>
+          <option value="rating_tier">By rating tier</option>
         </select>
       </div>
       <canvas id="chart-2"></canvas>
@@ -100,13 +106,16 @@
     <div class="chart-card">
       <div class="chart-controls">
         <select data-role="measure" data-chart="3">
+          <option value="avg_rating">Average rating</option>
           <option value="count">Count</option>
-          <option value="total">Total</option>
-          <option value="median">Median</option>
-          <option value="rate">Rate</option>
+          <option value="total_revenue">Total revenue</option>
+          <option value="median_yield">Median yield</option>
         </select>
         <select data-role="breakdown" data-chart="3">
-          <option value="">TODO: breakdown by...</option>
+          <option value="language">By language</option>
+          <option value="genre">By genre</option>
+          <option value="decade">By decade</option>
+          <option value="rating_tier">By rating tier</option>
         </select>
       </div>
       <canvas id="chart-3"></canvas>
@@ -114,14 +123,13 @@
 
     <div class="chart-card">
       <div class="chart-controls">
-        <select data-role="measure" data-chart="4">
-          <option value="count">Count</option>
-          <option value="total">Total</option>
-          <option value="median">Median</option>
-          <option value="rate">Rate</option>
+        <select id="bubble-groupby">
+          <option value="genre">Group by genre</option>
+          <option value="language">Group by language</option>
         </select>
-        <select data-role="breakdown" data-chart="4">
-          <option value="">TODO: breakdown by...</option>
+        <select id="bubble-sizeby">
+          <option value="count">Bubble size: number of movies</option>
+          <option value="median_yield">Bubble size: median yield</option>
         </select>
       </div>
       <canvas id="chart-4"></canvas>
@@ -129,21 +137,20 @@
 
   </section>
 
-  <!-- Table of the numbers behind the current view -->
   <section class="table-card" id="table-section">
     <table class="data-table" id="data-table">
       <thead>
-        <tr><th colspan="4">Load a dataset to see rows here.</th></tr>
+        <tr><th>Group</th><th>Count</th><th>Avg rating</th><th>Total revenue</th><th>Median yield</th></tr>
       </thead>
       <tbody></tbody>
     </table>
   </section>
 
-  <p class="loading-note" id="loading-note">No dataset wired up yet — this is the dashboard scaffold.</p>
-
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
 <script src="js/dashboard.js"></script>
 </body>
 </html>
