@@ -7,6 +7,22 @@ let TOP_LANGUAGES = [];
 
 const state = { filters: { genre: '', decade: '', language: '', financial: '' } };
 
+const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
+
+function renderHeroBackdrop(posters) {
+  const el = document.getElementById('hero-backdrop');
+  if (!el) return;
+  el.innerHTML = posters.slice(0, 16).map((p) => `<img src="${POSTER_BASE}${p.poster_path}" alt="" loading="lazy">`).join('');
+}
+
+function renderMiniMarquee(posters) {
+  const row = document.getElementById('marquee-row-1');
+  if (!row) return;
+  row.innerHTML = posters.concat(posters).map((p) => `
+    <div class="poster-card" title="${p.title}"><img src="${POSTER_BASE}${p.poster_path}" alt="${p.title} poster" loading="lazy"></div>
+  `).join('');
+}
+
 const RATING_TIER_ORDER = ['<5', '5-6', '6-7', '7-8', '8+'];
 
 function breakdownKeyFns(topLangSet) {
@@ -155,8 +171,15 @@ function populateFilters(rows) {
   }
 }
 
-loadMovies().then((rows) => {
+Promise.all([
+  loadMovies(),
+  fetch('data/hero_posters.json').then((r) => r.json()).catch(() => []),
+]).then(([rows, posters]) => {
   ALL_ROWS = rows;
+  if (posters.length) {
+    renderHeroBackdrop(posters);
+    renderMiniMarquee(posters);
+  }
   populateFilters(rows);
   renderAll();
 
@@ -185,6 +208,8 @@ loadMovies().then((rows) => {
   });
 
   initTilt('.stat-tile, .chart-card');
+  initReveals();
+  animateHeroLines('.hero h1');
 }).catch((err) => {
   console.error('Failed to load dataset', err);
 });

@@ -19,14 +19,27 @@
   </div>
 </nav>
 
+<header class="hero compact">
+  <div class="hero-backdrop" id="hero-backdrop"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-spotlight"></div>
+  <span class="kicker">Interactive analysis</span>
+  <h1>
+    <span class="line">Explore</span>
+    <span class="line">the <em>Data</em></span>
+  </h1>
+  <p class="summary">Filter by genre, decade, language, and financial reporting. Every number and chart recomputes live.</p>
+</header>
+
+<section class="marquee-section mini-marquee">
+  <div class="marquee-track">
+    <div class="marquee-row" id="marquee-row-1"></div>
+  </div>
+</section>
+
 <main class="page-wide">
 
-  <header class="dashboard-header">
-    <h1>Explore the data</h1>
-    <p>Filter by genre, decade, language, and financial reporting. Every number and chart recomputes live.</p>
-  </header>
-
-  <section class="filter-bar" id="filters">
+  <section class="filter-bar reveal" id="filters">
     <div class="filter-group">
       <span class="filter-label">Genre</span>
       <select id="filter-genre" class="select-field"><option value="">All genres</option></select>
@@ -52,19 +65,19 @@
   </section>
 
   <section class="stat-row" id="summary-stats">
-    <div class="stat-tile">
+    <div class="stat-tile reveal">
       <div class="value" id="stat-count">0</div>
       <div class="label">Movies shown</div>
     </div>
-    <div class="stat-tile">
+    <div class="stat-tile reveal">
       <div class="value" id="stat-rating">0.00</div>
       <div class="label">Average rating</div>
     </div>
-    <div class="stat-tile">
+    <div class="stat-tile reveal">
       <div class="value" id="stat-popularity">0.0</div>
       <div class="label">Average popularity</div>
     </div>
-    <div class="stat-tile">
+    <div class="stat-tile reveal">
       <div class="value" id="stat-yield">0.00x</div>
       <div class="label">Median yield (rev ÷ budget)</div>
     </div>
@@ -72,7 +85,8 @@
 
   <section class="chart-grid" id="charts">
 
-    <div class="chart-card">
+    <div class="chart-card reveal">
+      <span class="chart-ordinal">01</span>
       <div class="chart-controls">
         <select class="select-field" data-role="measure" data-chart="1">
           <option value="count">Count</option>
@@ -90,7 +104,8 @@
       <div class="echart" id="chart-1"></div>
     </div>
 
-    <div class="chart-card">
+    <div class="chart-card reveal">
+      <span class="chart-ordinal">02</span>
       <div class="chart-controls">
         <select class="select-field" data-role="measure" data-chart="2">
           <option value="total_revenue">Total revenue</option>
@@ -108,7 +123,8 @@
       <div class="echart" id="chart-2"></div>
     </div>
 
-    <div class="chart-card">
+    <div class="chart-card reveal">
+      <span class="chart-ordinal">03</span>
       <div class="chart-controls">
         <select class="select-field" data-role="measure" data-chart="3">
           <option value="avg_rating">Average rating</option>
@@ -126,7 +142,8 @@
       <div class="echart" id="chart-3"></div>
     </div>
 
-    <div class="chart-card">
+    <div class="chart-card reveal">
+      <span class="chart-ordinal">04</span>
       <div class="chart-controls">
         <select class="select-field" id="bubble-groupby">
           <option value="genre">Group by genre</option>
@@ -142,7 +159,7 @@
 
   </section>
 
-  <section class="table-card" id="table-section">
+  <section class="table-card reveal" id="table-section">
     <table class="data-table" id="data-table">
       <thead>
         <tr><th>Group</th><th>Count</th><th>Avg rating</th><th>Total revenue</th><th>Median yield</th></tr>
