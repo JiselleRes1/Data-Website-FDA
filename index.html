@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Report</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="brand">TODO: Project Name</span>
+  <div class="links">
+    <a href="index.html" class="active">Report</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+</nav>
+
+<main class="page">
+
+  <header class="report-header">
+    <h1>TODO: Report Title</h1>
+    <p class="byline">By Jiselle Resendiz</p>
+    <p class="summary">
+      TODO: one paragraph summarizing what the data covers (source, time span,
+      groups) and the two or three biggest findings, once a dataset is chosen.
+    </p>
+  </header>
+
+  <!-- Headline numbers: at least 4, each with a label -->
+  <section class="stat-row" id="headline-stats">
+    <div class="stat-tile">
+      <div class="value">TODO</div>
+      <div class="label">Headline number 1</div>
+    </div>
+    <div class="stat-tile">
+      <div class="value">TODO</div>
+      <div class="label">Headline number 2</div>
+    </div>
+    <div class="stat-tile">
+      <div class="value">TODO</div>
+      <div class="label">Headline number 3</div>
+    </div>
+    <div class="stat-tile">
+      <div class="value">TODO</div>
+      <div class="label">Headline number 4</div>
+    </div>
+  </section>
+
+  <!-- 8+ finding sections. Each: heading = the finding, 1-2 paragraphs with
+       the numbers, and a chart. Duplicate this <section> block per finding. -->
+
+  <section class="finding" id="finding-1">
+    <h2>Finding 1: TODO heading that states the finding</h2>
+    <p>TODO paragraph explaining the finding and the numbers behind it.</p>
+    <div class="chart-card">
+      <canvas id="chart-1"></canvas>
+      <p class="chart-caption">TODO: what this chart shows, and units.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-2">
+    <h2>Finding 2: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-2"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-3">
+    <h2>Finding 3: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-3"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-4">
+    <h2>Finding 4: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-4"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-5">
+    <h2>Finding 5: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-5"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-6">
+    <h2>Finding 6: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-6"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-7">
+    <h2>Finding 7: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-7"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <section class="finding" id="finding-8">
+    <h2>Finding 8: TODO heading</h2>
+    <p>TODO paragraph.</p>
+    <div class="chart-card">
+      <canvas id="chart-8"></canvas>
+      <p class="chart-caption">TODO caption.</p>
+    </div>
+  </section>
+
+  <!-- Closing methodology section -->
+  <section class="methodology" id="methodology">
+    <h2>About this data</h2>
+    <dl>
+      <dt>Source</dt>
+      <dd>TODO: where the data comes from (organization, URL, date retrieved).</dd>
+
+      <dt>What one row is</dt>
+      <dd>TODO: e.g. "one company in one fiscal year" or "one player in one game."</dd>
+
+      <dt>Rows dropped</dt>
+      <dd>TODO: any rows excluded and why (duplicates, missing keys, out-of-range dates, etc.), or "none."</dd>
+
+      <dt>How rates and averages are computed</dt>
+      <dd>TODO: the exact formula for every rate, ratio, or average reported above (e.g. "win rate = wins / games played").</dd>
+    </dl>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/report.js"></script>
+</body>
+</html>
