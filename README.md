@@ -1,34 +1,34 @@
-# Data Website FDA
+# Genre Yield
 
-A two-page data website: a scrollable report of findings and an interactive dashboard, built for a course project. Published with GitHub Pages.
-
-**Dataset: not yet chosen.** This repo currently holds the site foundation (navigation, styling, page structure, chart/filter scaffolding). The dataset, findings, and dashboard logic will be filled in once a dataset is selected.
+A two-page data website analyzing which movie genres deliver the best return on their production budget. Built for a course project; published with GitHub Pages.
 
 ## Live site
 
-TBD — will be `https://jiselleres1.github.io/Data-Website-FDA/` once GitHub Pages is enabled.
+https://jiselleres1.github.io/Data-Website-FDA/
 
 ## Files
 
 | File | What it does |
 |---|---|
-| `index.html` | The report page. Title, summary, headline numbers, 8+ findings sections (each with a chart), and a closing methodology section. |
-| `dashboard.html` | The interactive dashboard. Filters, summary numbers, switchable charts, and a data table, all driven by data loaded in the browser. |
-| `css/styles.css` | Shared styling for both pages: navigation bar, typography, color tokens (light/dark), layout. |
-| `js/report.js` | Renders the charts on the report page from the dataset. |
-| `js/dashboard.js` | Loads the dataset, wires up filters/switches, and renders the dashboard charts, summary numbers, and table. |
-| `data/` | The dataset file(s) used by the site, plus any notes on where the data came from. |
-| `scripts/` | Any data-prep scripts used to clean or reshape the raw data before it's used by the site. |
+| `index.html` | The report page. Title, summary, 4 headline numbers, 8 findings (each with a chart computed live from the data), and a closing methodology section. |
+| `dashboard.html` | The interactive dashboard. 4 filters, 4 live summary numbers, 4 switchable charts (bar x3 + a genre/language bubble chart), and a data table — all recomputed from the currently-filtered rows in the browser. |
+| `css/styles.css` | Shared styling for both pages: navigation bar, typography, light/dark color tokens, layout. |
+| `js/data.js` | Loads `data/movies_clean.csv` (via PapaParse) and shared aggregation helpers (group-by, mean/median/sum, measure computation) used by both pages. |
+| `js/report.js` | Computes every headline number, finding number, and chart on the report page from the loaded dataset. |
+| `js/dashboard.js` | Wires up the dashboard's filters and chart switches, and renders the charts, summary numbers, and table. |
+| `data/README.md` | Where the raw data came from, and the exact cleaning steps used to produce `movies_clean.csv`. |
+| `data/movies_clean.csv` | The cleaned dataset the site loads (72,775 rows). |
+| `scripts/clean_data.py` | Reproduces `movies_clean.csv` from the raw Kaggle download. |
 
 ## Data source
 
-TBD — to be filled in once a dataset is chosen. This section will describe where the data came from, what one row represents, which rows (if any) were dropped and why, and how every rate/ratio/average reported on the site is computed.
+[Full TMDB Movies Dataset](https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies) (asaniczka, Kaggle) — see `data/README.md` for the full cleaning writeup: what one row is, which rows were dropped and why, and how every rate/average (especially "yield" = revenue ÷ budget) is computed.
 
 ## Status
 
 - [x] Repository created, public, structured
 - [x] Shared layout, nav, and styling in place
-- [ ] Dataset selected
-- [ ] Report findings and charts (8+ sections)
-- [ ] Dashboard filters, switches, charts, table
-- [ ] GitHub Pages live and verified
+- [x] Dataset selected, cleaned, and documented
+- [x] Report findings and charts (8 sections)
+- [x] Dashboard filters, switches, charts, table
+- [ ] GitHub Pages live and verified end-to-end
