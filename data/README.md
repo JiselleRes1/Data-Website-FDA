@@ -1,10 +1,40 @@
 # data/
 
-The dataset file(s) the site loads will go here once a dataset is chosen.
+## Source
 
-Requirements the dataset must meet (per project spec):
-- Panel data: a time column (5+ periods) and a group column (10+ groups), one row per group-period (or one row per event with a date and a group).
-- At least 50,000 rows and 8 columns.
-- At least 2 categorical columns (for filtering) and 2 numeric columns (for totals/averages/ranks).
+**Full TMDB Movies Dataset** by asaniczka on Kaggle:
+https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies
 
-TODO once chosen: add the raw and/or cleaned file(s) here, and fill in `README.md`'s "Data source" section with where it came from, what one row is, any dropped rows, and how derived rates/averages are computed.
+Scraped from The Movie Database (TMDB) API, ~1.5 million movie records, updated regularly. Downloaded 2026-09-27 as `TMDB_movie_dataset_v11.csv`.
+
+## Files
+
+| File | Tracked in git? | What it is |
+|---|---|---|
+| `TMDB_movie_dataset_v11.csv` | No (too large, ~660MB) | The raw download. Re-download from the Kaggle link above and place it here to reproduce `movies_clean.csv`. |
+| `movies_clean.csv` | Yes | The cleaned dataset the site actually loads. Produced by `scripts/clean_data.py`. |
+
+## What one row is
+
+One row is one movie that was released in theaters/streaming (`status == "Released"`), with its release year, genre, and TMDB metrics.
+
+## Cleaning steps (`scripts/clean_data.py`)
+
+Starting from ~1.5M raw rows:
+1. Keep only `status == "Released"` (drops planned/rumored/in-production/canceled titles).
+2. Parse `release_date`; drop unparseable rows; keep only release years 1950–2026 (earlier "release dates" in the raw file, e.g. year 1800, are data-entry errors).
+3. Keep only rows with a non-empty `genres` list. TMDB lists multiple genres per movie (e.g. "Action, Science Fiction, Adventure"); we take the **first listed genre** as `primary_genre` so each row belongs to exactly one group.
+4. Keep only `vote_count >= 10` — the raw file is dominated by obscure, essentially-unrated entries that would otherwise swamp every genre-level average.
+
+**Result: 72,775 rows, 75 distinct release years (1950–2025), 19 genres.**
+
+## Financial fields (budget / revenue)
+
+TMDB only has real budget/revenue figures for a minority of titles — most rows have `budget = 0` and/or `revenue = 0`, meaning "not reported," not "zero dollars." Only 8,645 of the 72,775 rows have both `budget > 0` and `revenue > 0`. Any finding involving cost, revenue, or yield (revenue ÷ budget) filters to that subset explicitly and says so; findings about ratings, popularity, or counts use the full 72,775-row dataset.
+
+## How derived numbers are computed
+
+- **Yield / ROI** = `revenue / budget`, computed only where `budget > 0` and `revenue > 0`.
+- **Averages** (rating, popularity, runtime, etc.) are means over the filtered rows shown, unless labeled "median."
+- Category columns available for filtering: `primary_genre` (19 values), `original_language`, `adult` (boolean), plus `release_year` as the time filter.
+- Numeric columns available to total/average/rank: `budget`, `revenue`, `runtime`, `popularity`, `vote_average`, `vote_count`.

@@ -2,3 +2,9 @@
 node_modules/
 *.log
 .vscode/
+
+# Raw dataset download (huge — not committed; see data/README.md to re-download).
+# Only the cleaned, trimmed CSV produced by scripts/clean_data.py is tracked.
+data/TMDB_movie_dataset_v11.csv
+data/archive.zip
+data/*.zip
