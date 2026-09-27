@@ -39,6 +39,17 @@
 
 <main class="page-wide">
 
+  <section class="genre-picker-section reveal">
+    <p class="section-kicker">Pick a genre — hover a card to preview, click to filter</p>
+    <div class="genre-picker" id="genre-picker"></div>
+  </section>
+
+  <section class="search-spotlight reveal">
+    <div class="search-icon">🔎</div>
+    <input type="text" id="movie-search" class="search-input" placeholder="Find yourself in the data — search any movie title..." autocomplete="off">
+    <div class="search-results" id="search-results" hidden></div>
+  </section>
+
   <section class="filter-bar reveal" id="filters">
     <div class="filter-group">
       <span class="filter-label">Genre</span>
@@ -66,26 +77,30 @@
 
   <section class="stat-row" id="summary-stats">
     <div class="stat-tile reveal">
+      <span class="tile-icon">🎬</span>
       <div class="value" id="stat-count">0</div>
       <div class="label">Movies shown</div>
     </div>
     <div class="stat-tile reveal">
+      <span class="tile-icon">⭐</span>
       <div class="value" id="stat-rating">0.00</div>
       <div class="label">Average rating</div>
     </div>
     <div class="stat-tile reveal">
+      <span class="tile-icon">🔥</span>
       <div class="value" id="stat-popularity">0.0</div>
       <div class="label">Average popularity</div>
     </div>
     <div class="stat-tile reveal">
+      <span class="tile-icon">💰</span>
       <div class="value" id="stat-yield">0.00x</div>
       <div class="label">Median yield (rev ÷ budget)</div>
     </div>
   </section>
 
-  <section class="chart-grid" id="charts">
+  <section class="chart-grid bento" id="charts">
 
-    <div class="chart-card reveal">
+    <div class="chart-card chart-card--hero reveal">
       <span class="chart-ordinal">01</span>
       <div class="chart-controls">
         <select class="select-field" data-role="measure" data-chart="1">
@@ -100,11 +115,15 @@
           <option value="language">By language</option>
           <option value="rating_tier">By rating tier</option>
         </select>
+        <div class="segmented" id="chart1-viewtype" data-value="bar">
+          <button class="seg active" data-value="bar">Bars</button>
+          <button class="seg" data-value="radial">Wheel</button>
+        </div>
       </div>
       <div class="echart" id="chart-1"></div>
     </div>
 
-    <div class="chart-card reveal">
+    <div class="chart-card chart-card--side1 reveal">
       <span class="chart-ordinal">02</span>
       <div class="chart-controls">
         <select class="select-field" data-role="measure" data-chart="2">
@@ -123,7 +142,7 @@
       <div class="echart" id="chart-2"></div>
     </div>
 
-    <div class="chart-card reveal">
+    <div class="chart-card chart-card--side2 reveal">
       <span class="chart-ordinal">03</span>
       <div class="chart-controls">
         <select class="select-field" data-role="measure" data-chart="3">
@@ -142,7 +161,7 @@
       <div class="echart" id="chart-3"></div>
     </div>
 
-    <div class="chart-card reveal">
+    <div class="chart-card chart-card--wide reveal">
       <span class="chart-ordinal">04</span>
       <div class="chart-controls">
         <select class="select-field" id="bubble-groupby">
@@ -159,13 +178,40 @@
 
   </section>
 
-  <section class="table-card reveal" id="table-section">
-    <table class="data-table" id="data-table">
-      <thead>
-        <tr><th>Group</th><th>Count</th><th>Avg rating</th><th>Total revenue</th><th>Median yield</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <section class="faceoff-card reveal" id="faceoff">
+    <div class="faceoff-header">
+      <h3>Genre Face-Off</h3>
+      <p>Pick two genres for a head-to-head comparison.</p>
+    </div>
+    <div class="faceoff-pickers">
+      <select class="select-field" id="faceoff-a"></select>
+      <span class="faceoff-vs">VS</span>
+      <select class="select-field" id="faceoff-b"></select>
+    </div>
+    <div class="faceoff-posters">
+      <img id="faceoff-poster-a" alt="">
+      <img id="faceoff-poster-b" alt="">
+    </div>
+    <div class="faceoff-rows" id="faceoff-rows"></div>
+  </section>
+
+  <section class="leaderboard-card reveal" id="leaderboard-section">
+    <div class="leaderboard-header">
+      <h3>Numbers behind the current view</h3>
+      <div class="segmented" id="view-toggle" data-value="leaderboard">
+        <button class="seg active" data-value="leaderboard">Leaderboard</button>
+        <button class="seg" data-value="table">Table</button>
+      </div>
+    </div>
+    <div id="leaderboard-view"></div>
+    <div class="table-card" id="table-section" hidden>
+      <table class="data-table" id="data-table">
+        <thead>
+          <tr><th>Group</th><th>Count</th><th>Avg rating</th><th>Total revenue</th><th>Median yield</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </section>
 
 </main>

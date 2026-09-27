@@ -24,6 +24,12 @@ function gradientFillH(hex) {
 }
 
 const chartInstances = new Map();
+// Holds the most recently requested apply() per chart, so a pending
+// IntersectionObserver (registered before the first render) fires the
+// LATEST render instead of a stale one captured when it was created — this
+// matters because filters (e.g. the genre picker) can change the data
+// before a chart has ever scrolled into view.
+const chartLatestApply = new Map();
 
 // Lazily creates an ECharts instance in `dom` and calls optionFn() to get
 // its option the first time the element scrolls into view (so the chart
@@ -42,9 +48,10 @@ function lazyChart(domId, optionFn, afterFn) {
       chartInstances.set(domId, chart);
       window.addEventListener('resize', () => {
         chart.resize();
-        if (afterFn) afterFn(chart);
+        if (chart._lastAfterFn) chart._lastAfterFn(chart);
       });
     }
+    chart._lastAfterFn = afterFn;
     chart.setOption(optionFn(), true);
     if (afterFn) {
       const onFinished = () => { afterFn(chart); chart.off('finished', onFinished); };
@@ -52,11 +59,14 @@ function lazyChart(domId, optionFn, afterFn) {
     }
   };
 
+  chartLatestApply.set(domId, apply);
+
   if (!dom.dataset.observed) {
     dom.dataset.observed = '1';
     const io = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        apply();
+        const latest = chartLatestApply.get(domId);
+        if (latest) latest();
         io.disconnect();
       }
     }, { threshold: 0.15 });
@@ -167,6 +177,41 @@ function barOption(categories, values, { color, valueFormatter = (v) => v, horiz
       emphasis: { itemStyle: { color: color || cssVar('--gold') } },
       barMaxWidth: 42,
       animationDuration: 900,
+      animationEasing: 'cubicOut',
+    }],
+  };
+}
+
+// A circular "film reel" bar chart: same data as barOption, but wrapped
+// around a polar axis instead of a cartesian grid. Genre-aware tooltip only
+// (no poster medallions — polar pixel geometry isn't worth the complexity).
+function radialBarOption(categories, values, { color, valueFormatter = (v) => v } = {}) {
+  const grad = gradientFill(color || cssVar('--gold'));
+  return {
+    backgroundColor: 'transparent',
+    polar: { radius: ['12%', '78%'], center: ['50%', '52%'] },
+    angleAxis: {
+      type: 'category',
+      data: categories,
+      axisLine: { lineStyle: { color: CHART_GRID() } },
+      axisTick: { show: false },
+      axisLabel: { color: CHART_TEXT(), fontSize: 10 },
+    },
+    radiusAxis: {
+      type: 'value',
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { lineStyle: { color: CHART_GRID() } },
+      axisLabel: { color: CHART_MUTED(), fontSize: 9, formatter: valueFormatter },
+    },
+    tooltip: { ...tooltipStyle(), formatter: genreTooltipFormatter(valueFormatter) },
+    series: [{
+      type: 'bar',
+      data: values,
+      coordinateSystem: 'polar',
+      itemStyle: { color: grad },
+      roundCap: true,
+      animationDuration: 1000,
       animationEasing: 'cubicOut',
     }],
   };

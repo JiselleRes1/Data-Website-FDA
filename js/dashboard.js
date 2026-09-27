@@ -1,13 +1,31 @@
 // Dashboard: loads data/movies_clean.csv, wires up filters/switches, and
-// renders summary numbers, four ECharts charts, and a table — all
-// recomputed from the currently-filtered rows on every change.
+// renders summary numbers, charts, a genre picker, movie search, a genre
+// face-off, and a leaderboard/table — all recomputed live from the
+// currently-filtered rows.
 
 let ALL_ROWS = [];
 let TOP_LANGUAGES = [];
+let chart1ViewType = 'bar';
 
 const state = { filters: { genre: '', decade: '', language: '', financial: '' } };
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
+const GENRE_ACCENT_ORDER = [
+  'Drama', 'Comedy', 'Action', 'Horror', 'Documentary', 'Animation', 'Thriller', 'Crime',
+  'Romance', 'Adventure', 'Family', 'Science Fiction', 'TV Movie', 'Music', 'Fantasy',
+  'Mystery', 'Western', 'War', 'History',
+];
+const RATING_TIER_ORDER = ['<5', '5-6', '6-7', '7-8', '8+'];
+
+function genreAccentColor(genre) {
+  const idx = GENRE_ACCENT_ORDER.indexOf(genre);
+  return idx === -1 ? cssVar('--gold') : cssVar(`--series-${(idx % 8) + 1}`);
+}
+
+function setAmbientAccent(genre) {
+  if (genre) document.documentElement.style.setProperty('--accent-live', genreAccentColor(genre));
+  else document.documentElement.style.removeProperty('--accent-live');
+}
 
 function renderHeroBackdrop(posters) {
   const el = document.getElementById('hero-backdrop');
@@ -22,8 +40,6 @@ function renderMiniMarquee(posters) {
     <div class="poster-card" title="${p.title}"><img src="${POSTER_BASE}${p.poster_path}" alt="${p.title} poster" loading="lazy"></div>
   `).join('');
 }
-
-const RATING_TIER_ORDER = ['<5', '5-6', '6-7', '7-8', '8+'];
 
 function breakdownKeyFns(topLangSet) {
   return {
@@ -76,6 +92,15 @@ function renderBarChart(chartNum, rows) {
   const entries = aggregateBreakdown(rows, breakdown, measure);
   const colorVar = ['--series-1', '--series-3', '--series-5'][chartNum - 1] || '--gold';
   const isGenre = breakdown === 'genre';
+
+  if (chartNum === 1 && chart1ViewType === 'radial') {
+    lazyChart('chart-1', () => radialBarOption(
+      entries.map((e) => e.label), entries.map((e) => e.value),
+      { color: cssVar(colorVar), valueFormatter: (v) => fmtNumber(v, measure) },
+    ));
+    return;
+  }
+
   lazyChart(`chart-${chartNum}`, () => barOption(
     entries.map((e) => e.label), entries.map((e) => e.value),
     { color: cssVar(colorVar), valueFormatter: (v) => fmtNumber(v, measure), genreAware: isGenre },
@@ -102,20 +127,25 @@ function renderBubbleChart(rows) {
   }), groupByType === 'genre' ? (chart) => addPosterToppers(chart, points.map((p) => ({ label: p.label, x: p.x, y: p.y })), { offsetY: 14 }) : undefined);
 }
 
-function renderTable(rows) {
+// ---- Leaderboard / table (shared computation) ----
+function computeDataSection(rows) {
   const breakdown = document.querySelector('select[data-role="breakdown"][data-chart="1"]').value;
+  const measure = document.querySelector('select[data-role="measure"][data-chart="1"]').value;
   const keyFn = breakdownKeyFns(new Set(TOP_LANGUAGES))[breakdown];
   const groups = groupBy(rows, keyFn);
-  const tableRows = sortEntries(breakdown, [...groups.entries()].map(([label, g]) => ({
+  const entries = [...groups.entries()].map(([label, g]) => ({
     label, n: g.length,
     avgRating: mean(g.filter((r) => r.vote_average > 0).map((r) => r.vote_average)),
     totalRevenue: sum(g.filter((r) => r.revenue > 0).map((r) => r.revenue)),
     medYield: (() => { const fin = g.filter((r) => r.has_financials); return fin.length ? median(fin.map((r) => r.yield)) : null; })(),
-    value: g.length,
-  })));
+    value: computeMeasure(g, measure),
+  }));
+  return { breakdown, measure, rows: sortEntries(breakdown, entries) };
+}
 
+function renderTable(data) {
   const tbody = document.querySelector('#data-table tbody');
-  tbody.innerHTML = tableRows.map((row) => `
+  tbody.innerHTML = data.rows.map((row) => `
     <tr>
       <td>${row.label}</td>
       <td>${row.n.toLocaleString()}</td>
@@ -126,6 +156,29 @@ function renderTable(rows) {
   `).join('');
 }
 
+function renderLeaderboard(data) {
+  const el = document.getElementById('leaderboard-view');
+  const maxVal = Math.max(...data.rows.map((r) => Math.abs(r.value)), 1);
+  el.innerHTML = data.rows.map((row, i) => {
+    const info = data.breakdown === 'genre' ? GENRE_POSTERS[row.label] : null;
+    const media = info
+      ? `<img class="lb-poster" src="${posterUrl(info.poster_path)}" alt="">`
+      : `<div class="lb-avatar">${row.label.charAt(0)}</div>`;
+    const pct = Math.max(4, (Math.abs(row.value) / maxVal) * 100);
+    return `
+      <div class="lb-row">
+        <div class="lb-rank">${i + 1}</div>
+        ${media}
+        <div class="lb-info">
+          <div class="lb-name">${row.label}</div>
+          <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${pct}%"></div></div>
+          <div class="lb-sub">Count ${row.n.toLocaleString()} · Rating ${row.avgRating ? row.avgRating.toFixed(2) : '—'} · Revenue ${fmtNumber(row.totalRevenue, 'total_revenue')} · Yield ${row.medYield !== null ? row.medYield.toFixed(2) + 'x' : 'n/a'}</div>
+        </div>
+        <div class="lb-value">${fmtNumber(row.value, data.measure)}</div>
+      </div>`;
+  }).join('');
+}
+
 function renderAll() {
   const rows = applyFilters();
   renderStats(rows);
@@ -133,7 +186,17 @@ function renderAll() {
   renderBarChart(2, rows);
   renderBarChart(3, rows);
   renderBubbleChart(rows);
-  renderTable(rows);
+  const data = computeDataSection(rows);
+  renderTable(data);
+  renderLeaderboard(data);
+}
+
+function setGenreFilter(genre) {
+  state.filters.genre = genre;
+  document.getElementById('filter-genre').value = genre;
+  document.querySelectorAll('.gcard').forEach((c) => c.classList.toggle('active', c.dataset.genre === genre && genre !== ''));
+  setAmbientAccent(genre);
+  renderAll();
 }
 
 function setupPillGroup(containerId, filterKey) {
@@ -145,6 +208,19 @@ function setupPillGroup(containerId, filterKey) {
     btn.classList.add('active');
     state.filters[filterKey] = btn.dataset.value;
     renderAll();
+  });
+}
+
+function setupSegmented(id, onChange) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('click', (e) => {
+    const btn = e.target.closest('.seg');
+    if (!btn) return;
+    el.querySelectorAll('.seg').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    el.dataset.value = btn.dataset.value;
+    onChange(btn.dataset.value);
   });
 }
 
@@ -170,6 +246,180 @@ function populateFilters(rows) {
   for (const [lang, count] of langCounts.slice(0, 20)) {
     langSel.add(new Option(`${lang} — ${count.toLocaleString()} titles`, lang));
   }
+
+  return genres;
+}
+
+// ---- Genre picker (flip cards, doubles as a genre filter) ----
+function renderGenrePicker(genres) {
+  const el = document.getElementById('genre-picker');
+  if (!el) return;
+  const genreCounts = {};
+  for (const [g, list] of groupBy(ALL_ROWS, (r) => r.primary_genre)) genreCounts[g] = list.length;
+
+  const allCard = `
+    <div class="gcard active" data-genre="">
+      <div class="gcard-inner">
+        <div class="gcard-front all-genres">🎬</div>
+        <div class="gcard-back"><div class="g-name">All</div><div class="g-stat">${ALL_ROWS.length.toLocaleString()}</div></div>
+      </div>
+      <div class="gcard-label">All genres</div>
+    </div>`;
+  const cards = genres.map((g) => {
+    const info = GENRE_POSTERS[g];
+    const front = info ? `<img src="${posterUrl(info.poster_path)}" alt="${g}">` : '';
+    return `
+      <div class="gcard" data-genre="${g}">
+        <div class="gcard-inner">
+          <div class="gcard-front">${front}</div>
+          <div class="gcard-back">
+            <div class="g-name">${g}</div>
+            <div class="g-stat">${(genreCounts[g] || 0).toLocaleString()} films</div>
+          </div>
+        </div>
+        <div class="gcard-label">${g}</div>
+      </div>`;
+  }).join('');
+  el.innerHTML = allCard + cards;
+
+  el.addEventListener('click', (e) => {
+    const card = e.target.closest('.gcard');
+    if (!card) return;
+    setGenreFilter(card.dataset.genre);
+  });
+}
+
+// ---- Movie search ("find yourself in the data") ----
+function genreMedianYield(genre) {
+  const fin = ALL_ROWS.filter((r) => r.primary_genre === genre && r.has_financials);
+  return fin.length >= 5 ? median(fin.map((r) => r.yield)) : null;
+}
+
+function showSearchCallout(movie) {
+  let el = document.getElementById('search-callout');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'search-callout';
+    el.className = 'search-callout';
+    document.querySelector('.search-spotlight').appendChild(el);
+  }
+  const gYield = genreMedianYield(movie.primary_genre);
+  el.innerHTML = `<strong>${movie.title}</strong> (${movie.release_year}) — a ${movie.primary_genre} film rated ${movie.vote_average.toFixed(1)}/10, popularity ${movie.popularity.toFixed(1)}.
+    ${gYield !== null ? `${movie.primary_genre} overall has a median yield of ${gYield.toFixed(2)}x.` : ''} Dashboard filtered to ${movie.primary_genre}.`;
+}
+
+function setupMovieSearch() {
+  const input = document.getElementById('movie-search');
+  const results = document.getElementById('search-results');
+  if (!input || !results) return;
+
+  const closeResults = () => { results.hidden = true; results.innerHTML = ''; };
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 2) { closeResults(); return; }
+    const matches = ALL_ROWS.filter((r) => r.title && r.title.toLowerCase().includes(q)).slice(0, 8);
+    if (!matches.length) {
+      results.innerHTML = `<div class="search-result-item"><span class="sr-title">No titles match "${input.value}"</span></div>`;
+      results.hidden = false;
+      return;
+    }
+    results.innerHTML = matches.map((m) => {
+      const info = GENRE_POSTERS[m.primary_genre];
+      const img = info
+        ? `<img src="${posterUrl(info.poster_path)}" alt="">`
+        : '<div style="width:30px;height:44px;flex:none;background:var(--surface-1);border-radius:3px;"></div>';
+      const safeTitle = m.title.replace(/"/g, '&quot;');
+      return `<div class="search-result-item" data-title="${safeTitle}">
+        ${img}
+        <div>
+          <div class="sr-title">${m.title}</div>
+          <div class="sr-meta">${m.release_year} · ${m.primary_genre}</div>
+        </div>
+      </div>`;
+    }).join('');
+    results.hidden = false;
+  });
+
+  results.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (!item || !item.dataset.title) return;
+    const movie = ALL_ROWS.find((r) => r.title === item.dataset.title);
+    if (!movie) return;
+    input.value = movie.title;
+    closeResults();
+    setGenreFilter(movie.primary_genre);
+    showSearchCallout(movie);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-spotlight')) closeResults();
+  });
+}
+
+// ---- Genre face-off ----
+function genreFullStats(genre) {
+  const rows = ALL_ROWS.filter((r) => r.primary_genre === genre);
+  const fin = rows.filter((r) => r.has_financials);
+  return {
+    count: rows.length,
+    avgRating: mean(rows.filter((r) => r.vote_average > 0).map((r) => r.vote_average)),
+    totalRevenue: sum(rows.filter((r) => r.revenue > 0).map((r) => r.revenue)),
+    medianYield: fin.length ? median(fin.map((r) => r.yield)) : null,
+  };
+}
+
+function renderFaceoff() {
+  const gA = document.getElementById('faceoff-a').value;
+  const gB = document.getElementById('faceoff-b').value;
+  const a = genreFullStats(gA);
+  const b = genreFullStats(gB);
+
+  const posterA = document.getElementById('faceoff-poster-a');
+  const posterB = document.getElementById('faceoff-poster-b');
+  const infoA = GENRE_POSTERS[gA];
+  const infoB = GENRE_POSTERS[gB];
+  posterA.src = infoA ? posterUrl(infoA.poster_path) : '';
+  posterA.alt = gA;
+  posterB.src = infoB ? posterUrl(infoB.poster_path) : '';
+  posterB.alt = gB;
+
+  const metrics = [
+    { key: 'count', label: 'Movie count', fmt: (v) => v.toLocaleString() },
+    { key: 'avgRating', label: 'Average rating', fmt: (v) => v.toFixed(2) },
+    { key: 'totalRevenue', label: 'Total revenue', fmt: (v) => fmtNumber(v, 'total_revenue') },
+    { key: 'medianYield', label: 'Median yield', fmt: (v) => (v !== null && v !== undefined ? v.toFixed(2) + 'x' : 'n/a') },
+  ];
+  document.getElementById('faceoff-rows').innerHTML = metrics.map((m) => {
+    const rawA = a[m.key];
+    const rawB = b[m.key];
+    const va = rawA ?? 0;
+    const vb = rawB ?? 0;
+    const maxAbs = Math.max(Math.abs(va), Math.abs(vb), 1);
+    const pctA = Math.max(4, (Math.abs(va) / maxAbs) * 100);
+    const pctB = Math.max(4, (Math.abs(vb) / maxAbs) * 100);
+    return `
+      <div class="faceoff-row">
+        <div class="fo-label">${m.label}</div>
+        <div class="faceoff-bars">
+          <div class="faceoff-track left"><div class="faceoff-fill a" style="width:${pctA}%"></div></div>
+          <div class="faceoff-value">${m.fmt(rawA)} <span style="color:var(--text-muted);">vs</span> ${m.fmt(rawB)}</div>
+          <div class="faceoff-track"><div class="faceoff-fill b" style="width:${pctB}%"></div></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function populateFaceoff(genres) {
+  const selA = document.getElementById('faceoff-a');
+  const selB = document.getElementById('faceoff-b');
+  if (!selA || !selB) return;
+  for (const g of genres) { selA.add(new Option(g, g)); selB.add(new Option(g, g)); }
+  selA.value = genres.includes('Horror') ? 'Horror' : genres[0];
+  selB.value = genres.includes('Drama') ? 'Drama' : genres[1];
+  selA.addEventListener('change', renderFaceoff);
+  selB.addEventListener('change', renderFaceoff);
+  renderFaceoff();
 }
 
 Promise.all([
@@ -183,13 +433,13 @@ Promise.all([
     renderHeroBackdrop(posters);
     renderMiniMarquee(posters);
   }
-  populateFilters(rows);
+  const genres = populateFilters(rows);
+  renderGenrePicker(genres);
+  populateFaceoff(genres);
+  setupMovieSearch();
   renderAll();
 
-  document.getElementById('filter-genre').addEventListener('change', (e) => {
-    state.filters.genre = e.target.value;
-    renderAll();
-  });
+  document.getElementById('filter-genre').addEventListener('change', (e) => setGenreFilter(e.target.value));
   document.getElementById('filter-language').addEventListener('change', (e) => {
     state.filters.language = e.target.value;
     renderAll();
@@ -201,16 +451,30 @@ Promise.all([
     sel.addEventListener('change', renderAll);
   });
 
+  setupSegmented('chart1-viewtype', (val) => {
+    chart1ViewType = val;
+    renderBarChart(1, applyFilters());
+  });
+  setupSegmented('view-toggle', (val) => {
+    document.getElementById('leaderboard-view').hidden = val === 'table';
+    document.getElementById('table-section').hidden = val !== 'table';
+  });
+
   document.getElementById('reset-filters').addEventListener('click', () => {
-    document.getElementById('filter-genre').value = '';
     document.getElementById('filter-language').value = '';
     document.querySelectorAll('#filter-decade .pill').forEach((p, i) => p.classList.toggle('active', i === 0));
     document.querySelectorAll('#filter-financial .pill').forEach((p, i) => p.classList.toggle('active', i === 0));
     state.filters = { genre: '', decade: '', language: '', financial: '' };
+    document.getElementById('filter-genre').value = '';
+    document.querySelectorAll('.gcard').forEach((c) => c.classList.toggle('active', c.dataset.genre === ''));
+    setAmbientAccent('');
+    document.getElementById('movie-search').value = '';
+    const callout = document.getElementById('search-callout');
+    if (callout) callout.remove();
     renderAll();
   });
 
-  initTilt('.stat-tile, .chart-card');
+  initTilt('.stat-tile, .chart-card, .faceoff-card, .leaderboard-card');
   initReveals();
   animateHeroLines('.hero h1');
 }).catch((err) => {

@@ -27,7 +27,8 @@ function loadMovies() {
       complete: (results) => {
         const rows = results.data.map((r) => ({
           id: r.id,
-          title: r.title,
+          title: String(r.title), // PapaParse's dynamicTyping turns numeric-looking
+          // titles (e.g. "1917", "300") into JS numbers — force back to string.
           release_year: r.release_year,
           decade: decadeOf(r.release_year),
           primary_genre: r.primary_genre,
