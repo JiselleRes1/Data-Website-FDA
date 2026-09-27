@@ -75,10 +75,11 @@ function renderBarChart(chartNum, rows) {
   const breakdown = document.querySelector(`select[data-role="breakdown"][data-chart="${chartNum}"]`).value;
   const entries = aggregateBreakdown(rows, breakdown, measure);
   const colorVar = ['--series-1', '--series-3', '--series-5'][chartNum - 1] || '--gold';
+  const isGenre = breakdown === 'genre';
   lazyChart(`chart-${chartNum}`, () => barOption(
     entries.map((e) => e.label), entries.map((e) => e.value),
-    { color: cssVar(colorVar), valueFormatter: (v) => fmtNumber(v, measure) },
-  ));
+    { color: cssVar(colorVar), valueFormatter: (v) => fmtNumber(v, measure), genreAware: isGenre },
+  ), isGenre ? (chart) => addPosterToppers(chart, entries.map((e, i) => ({ label: e.label, x: i, y: e.value }))) : undefined);
 }
 
 function renderBubbleChart(rows) {
@@ -98,7 +99,7 @@ function renderBubbleChart(rows) {
   lazyChart('chart-4', () => bubbleOption(points, {
     xFmt: (v) => `$${(v / 1e6).toFixed(0)}M`, yFmt: (v) => `$${(v / 1e6).toFixed(0)}M`,
     xLabel: 'Avg budget', yLabel: 'Avg revenue',
-  }));
+  }), groupByType === 'genre' ? (chart) => addPosterToppers(chart, points.map((p) => ({ label: p.label, x: p.x, y: p.y })), { offsetY: 14 }) : undefined);
 }
 
 function renderTable(rows) {
@@ -174,8 +175,10 @@ function populateFilters(rows) {
 Promise.all([
   loadMovies(),
   fetch('data/hero_posters.json').then((r) => r.json()).catch(() => []),
-]).then(([rows, posters]) => {
+  fetch('data/genre_posters.json').then((r) => r.json()).catch(() => ({})),
+]).then(([rows, posters, genrePosters]) => {
   ALL_ROWS = rows;
+  setGenrePosters(genrePosters);
   if (posters.length) {
     renderHeroBackdrop(posters);
     renderMiniMarquee(posters);

@@ -73,118 +73,134 @@
   </section>
 
   <section class="finding reveal" id="finding-1">
-    <span class="ordinal">01</span>
-    <h2>Horror delivers the highest return on every dollar spent</h2>
-    <p>
-      Among the <span id="f1-fin-count">—</span> movies in the dataset with a reported budget
-      and revenue, <span id="f1-top-genre">—</span> has the highest median yield of any genre at
-      <span id="f1-top-yield">—</span>x revenue per dollar budgeted — despite an average budget of
-      only <span id="f1-top-budget">—</span>, one of the smallest of the 19 genres. At the other
-      end, <span id="f1-bottom-genre">—</span> returns a median of just
-      <span id="f1-bottom-yield">—</span>x.
-    </p>
+    <div class="finding-text">
+      <span class="ordinal">01</span>
+      <h2>Horror delivers the highest return on every dollar spent</h2>
+      <p>
+        Among the <span id="f1-fin-count">—</span> movies in the dataset with a reported budget
+        and revenue, <span id="f1-top-genre">—</span> has the highest median yield of any genre at
+        <span id="f1-top-yield">—</span>x revenue per dollar budgeted — despite an average budget of
+        only <span id="f1-top-budget">—</span>, one of the smallest of the 19 genres. At the other
+        end, <span id="f1-bottom-genre">—</span> returns a median of just
+        <span id="f1-bottom-yield">—</span>x.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-1"></div>
-      <p class="chart-caption">Median (revenue ÷ budget) by genre, genres with at least 30 financially-reported titles.</p>
+      <p class="chart-caption">Median (revenue ÷ budget) by genre, genres with at least 30 financially-reported titles. Hover a bar for the genre's defining title.</p>
     </div>
   </section>
 
-  <section class="finding reveal" id="finding-2">
-    <span class="ordinal">02</span>
-    <h2>Bigger budgets don't buy better returns</h2>
-    <p>
-      Adventure and Animation carry the largest average production budgets of any genre —
-      <span id="f2-adv-budget">—</span> and <span id="f2-anim-budget">—</span> respectively — and
-      generate enormous absolute box office. But per dollar spent, their median yields
-      (<span id="f2-adv-yield">—</span>x and <span id="f2-anim-yield">—</span>x) both trail the
-      top genre's <span id="f2-top-yield">—</span>x.
-    </p>
+  <section class="finding reveal alt" id="finding-2">
+    <div class="finding-text">
+      <span class="ordinal">02</span>
+      <h2>Bigger budgets don't buy better returns</h2>
+      <p>
+        Adventure and Animation carry the largest average production budgets of any genre —
+        <span id="f2-adv-budget">—</span> and <span id="f2-anim-budget">—</span> respectively — and
+        generate enormous absolute box office. But per dollar spent, their median yields
+        (<span id="f2-adv-yield">—</span>x and <span id="f2-anim-yield">—</span>x) both trail the
+        top genre's <span id="f2-top-yield">—</span>x.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-2"></div>
       <p class="chart-caption">Each bubble is a genre: position is average budget vs. average revenue, size is number of financially-reported titles.</p>
     </div>
   </section>
 
   <section class="finding reveal" id="finding-3">
-    <span class="ordinal">03</span>
-    <h2>The best-reviewed genres aren't the best-paying ones</h2>
-    <p>
-      Horror is TMDB voters' lowest-rated genre of the 19, averaging
-      <span id="f3-horror-rating">—</span>/10 — yet it tops the yield leaderboard.
-      <span id="f3-top-rated-genre">—</span> is rated highest at
-      <span id="f3-top-rated-value">—</span>/10, but doesn't come close to Horror's
-      <span id="f3-horror-yield">—</span>x median return.
-    </p>
+    <div class="finding-text">
+      <span class="ordinal">03</span>
+      <h2>The best-reviewed genres aren't the best-paying ones</h2>
+      <p>
+        Horror is TMDB voters' lowest-rated genre of the 19, averaging
+        <span id="f3-horror-rating">—</span>/10 — yet it tops the yield leaderboard.
+        <span id="f3-top-rated-genre">—</span> is rated highest at
+        <span id="f3-top-rated-value">—</span>/10, but doesn't come close to Horror's
+        <span id="f3-horror-yield">—</span>x median return.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-3"></div>
       <p class="chart-caption">Average TMDB vote by genre, all 19 genres.</p>
     </div>
   </section>
 
-  <section class="finding reveal" id="finding-4">
-    <span class="ordinal">04</span>
-    <h2>Output boomed for six decades, then pulled back</h2>
-    <p>
-      Release volume grew from <span id="f4-1950">—</span> films in the 1950s to
-      <span id="f4-2010">—</span> in the 2010s — a <span id="f4-multiplier">—</span>x increase —
-      before falling to <span id="f4-2020">—</span> in the 2020s so far.
-    </p>
+  <section class="finding reveal alt" id="finding-4">
+    <div class="finding-text">
+      <span class="ordinal">04</span>
+      <h2>Output boomed for six decades, then pulled back</h2>
+      <p>
+        Release volume grew from <span id="f4-1950">—</span> films in the 1950s to
+        <span id="f4-2010">—</span> in the 2010s — a <span id="f4-multiplier">—</span>x increase —
+        before falling to <span id="f4-2020">—</span> in the 2020s so far.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-4"></div>
       <p class="chart-caption">Number of movies released per decade.</p>
     </div>
   </section>
 
   <section class="finding reveal" id="finding-5">
-    <span class="ordinal">05</span>
-    <h2>Drama and Comedy dominate production, not the yield chart</h2>
-    <p>
-      Drama is the largest genre with <span id="f5-drama-count">—</span> films
-      (<span id="f5-drama-pct">—</span>%), Comedy follows with <span id="f5-comedy-count">—</span>
-      (<span id="f5-comedy-pct">—</span>%). Yet their median yields —
-      <span id="f5-drama-yield">—</span>x and <span id="f5-comedy-yield">—</span>x —
-      both sit mid-pack.
-    </p>
+    <div class="finding-text">
+      <span class="ordinal">05</span>
+      <h2>Drama and Comedy dominate production, not the yield chart</h2>
+      <p>
+        Drama is the largest genre with <span id="f5-drama-count">—</span> films
+        (<span id="f5-drama-pct">—</span>%), Comedy follows with <span id="f5-comedy-count">—</span>
+        (<span id="f5-comedy-pct">—</span>%). Yet their median yields —
+        <span id="f5-drama-yield">—</span>x and <span id="f5-comedy-yield">—</span>x —
+        both sit mid-pack.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-5"></div>
       <p class="chart-caption">Number of movies by genre, all 19 genres, sorted by volume.</p>
     </div>
   </section>
 
-  <section class="finding reveal" id="finding-6">
-    <span class="ordinal">06</span>
-    <h2>Foreign-language films rate better but stay far less visible</h2>
-    <p>
-      Non-English-language films average a higher critic rating —
-      <span id="f6-nonen-rating">—</span> vs. <span id="f6-en-rating">—</span> out of 10 —
-      but score barely more than half the popularity, <span id="f6-nonen-pop">—</span> vs.
-      <span id="f6-en-pop">—</span>. English is the original language for
-      <span id="f6-en-pct">—</span>% of the dataset.
-    </p>
+  <section class="finding reveal alt" id="finding-6">
+    <div class="finding-text">
+      <span class="ordinal">06</span>
+      <h2>Foreign-language films rate better but stay far less visible</h2>
+      <p>
+        Non-English-language films average a higher critic rating —
+        <span id="f6-nonen-rating">—</span> vs. <span id="f6-en-rating">—</span> out of 10 —
+        but score barely more than half the popularity, <span id="f6-nonen-pop">—</span> vs.
+        <span id="f6-en-pop">—</span>. English is the original language for
+        <span id="f6-en-pct">—</span>% of the dataset.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-6"></div>
       <p class="chart-caption">Average TMDB vote by original language, top 10 languages by title count.</p>
     </div>
   </section>
 
   <section class="finding reveal" id="finding-7">
-    <span class="ordinal">07</span>
-    <h2>The cost of making a movie varies by an order of magnitude</h2>
-    <p>
-      Average production budgets range from <span id="f7-low-budget">—</span> for
-      <span id="f7-low-genre">—</span> to <span id="f7-high-budget">—</span> for
-      <span id="f7-high-genre">—</span> — a <span id="f7-ratio">—</span>x gap between the
-      cheapest and most expensive genre to produce.
-    </p>
+    <div class="finding-text">
+      <span class="ordinal">07</span>
+      <h2>The cost of making a movie varies by an order of magnitude</h2>
+      <p>
+        Average production budgets range from <span id="f7-low-budget">—</span> for
+        <span id="f7-low-genre">—</span> to <span id="f7-high-budget">—</span> for
+        <span id="f7-high-genre">—</span> — a <span id="f7-ratio">—</span>x gap between the
+        cheapest and most expensive genre to produce.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-7"></div>
       <p class="chart-caption">Average production budget by genre, sorted highest to lowest.</p>
     </div>
   </section>
 
-  <section class="finding reveal" id="finding-8">
-    <span class="ordinal">08</span>
-    <h2>Runtime is a genre signature, not a coincidence</h2>
-    <p>
-      <span id="f8-shortest-genre">—</span> runs shortest at
-      <span id="f8-shortest-runtime">—</span> minutes on average, while
-      <span id="f8-longest-genre">—</span> runs longest at
-      <span id="f8-longest-runtime">—</span> minutes — a <span id="f8-spread">—</span>-minute
-      spread across the 19 genres.
-    </p>
+  <section class="finding reveal alt" id="finding-8">
+    <div class="finding-text">
+      <span class="ordinal">08</span>
+      <h2>Runtime is a genre signature, not a coincidence</h2>
+      <p>
+        <span id="f8-shortest-genre">—</span> runs shortest at
+        <span id="f8-shortest-runtime">—</span> minutes on average, while
+        <span id="f8-longest-genre">—</span> runs longest at
+        <span id="f8-longest-runtime">—</span> minutes — a <span id="f8-spread">—</span>-minute
+        spread across the 19 genres.
+      </p>
+    </div>
     <div class="chart-card"><div class="echart" id="chart-8"></div>
       <p class="chart-caption">Average runtime (minutes) by genre, sorted longest to shortest.</p>
     </div>

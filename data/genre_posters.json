@@ -1,0 +1,78 @@
+{
+ "Action": {
+  "title": "Blue Beetle",
+  "poster_path": "/mXLOHHc1Zeuwsl4xYKjKh2280oL.jpg"
+ },
+ "Horror": {
+  "title": "Talk to Me",
+  "poster_path": "/kdPMUMJzyYAc4roD52qavX0nLIC.jpg"
+ },
+ "Comedy": {
+  "title": "Barbie",
+  "poster_path": "/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg"
+ },
+ "Animation": {
+  "title": "Elemental",
+  "poster_path": "/4Y1WNkd88JXmGfhtWR7dmDAo1T2.jpg"
+ },
+ "Adventure": {
+  "title": "Indiana Jones and the Dial of Destiny",
+  "poster_path": "/Af4bXE63pVsb2FtbW8uYIyPBadD.jpg"
+ },
+ "Drama": {
+  "title": "Oppenheimer",
+  "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
+ },
+ "Thriller": {
+  "title": "Heart of Stone",
+  "poster_path": "/vB8o2p4ETnrfiWEgVxHmHWP9yRl.jpg"
+ },
+ "Science Fiction": {
+  "title": "Guardians of the Galaxy Vol. 3",
+  "poster_path": "/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg"
+ },
+ "Fantasy": {
+  "title": "Knights of the Zodiac",
+  "poster_path": "/qW4crfED8mpNDadSmMdi7ZDzhXF.jpg"
+ },
+ "War": {
+  "title": "Guy Ritchie's The Covenant",
+  "poster_path": "/kVG8zFFYrpyYLoHChuEeOGAd6Ru.jpg"
+ },
+ "Romance": {
+  "title": "After Ever Happy",
+  "poster_path": "/moogpu8rNkEjTgFyLXwhPghft5w.jpg"
+ },
+ "Family": {
+  "title": "Coco",
+  "poster_path": "/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg"
+ },
+ "Mystery": {
+  "title": "Hypnotic",
+  "poster_path": "/m0mYmlN9AewOGSOl7Q1ZgZvEeUU.jpg"
+ },
+ "Crime": {
+  "title": "Saw",
+  "poster_path": "/uvjBl6LHmb5JpAbmSZzeWA1c7Sv.jpg"
+ },
+ "Western": {
+  "title": "The Good, the Bad and the Ugly",
+  "poster_path": "/bX2xnavhMYjWDoZp1VM6VnU1xwe.jpg"
+ },
+ "History": {
+  "title": "The Imitation Game",
+  "poster_path": "/zSqJ1qFq8NXFfi7JeIYMlzyR0dx.jpg"
+ },
+ "Documentary": {
+  "title": "Harry Potter 20th Anniversary: Return to Hogwarts",
+  "poster_path": "/jntLBq0MLR3hrwKaTQswxACRPMs.jpg"
+ },
+ "Music": {
+  "title": "Bohemian Rhapsody",
+  "poster_path": "/lHu1wtNaczFPGFDTrjCSzeLPTKN.jpg"
+ },
+ "TV Movie": {
+  "title": "Steven Universe: The Movie",
+  "poster_path": "/8mRgpubxHqnqvENK4Bei30xMDvy.jpg"
+ }
+}

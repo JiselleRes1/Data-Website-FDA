@@ -27,9 +27,11 @@ const chartInstances = new Map();
 
 // Lazily creates an ECharts instance in `dom` and calls optionFn() to get
 // its option the first time the element scrolls into view (so the chart
-// visibly draws itself in). Returns a setter you can call again later
+// visibly draws itself in). Pass `afterFn(chart)` to run once the chart has
+// finished animating in (e.g. to overlay poster-medallion graphics that need
+// the final axis pixel positions). Returns a setter you can call again later
 // (e.g. on filter change) to update an already-visible chart immediately.
-function lazyChart(domId, optionFn) {
+function lazyChart(domId, optionFn, afterFn) {
   const dom = document.getElementById(domId);
   if (!dom) return () => {};
 
@@ -38,9 +40,16 @@ function lazyChart(domId, optionFn) {
     if (!chart) {
       chart = echarts.init(dom, null, { renderer: 'canvas' });
       chartInstances.set(domId, chart);
-      window.addEventListener('resize', () => chart.resize());
+      window.addEventListener('resize', () => {
+        chart.resize();
+        if (afterFn) afterFn(chart);
+      });
     }
     chart.setOption(optionFn(), true);
+    if (afterFn) {
+      const onFinished = () => { afterFn(chart); chart.off('finished', onFinished); };
+      chart.on('finished', onFinished);
+    }
   };
 
   if (!dom.dataset.observed) {
@@ -59,6 +68,63 @@ function lazyChart(domId, optionFn) {
   return apply;
 }
 
+// ---- Poster medallions + rich poster tooltips (decorative, genre-aware) ----
+let GENRE_POSTERS = {};
+function setGenrePosters(map) { GENRE_POSTERS = map || {}; }
+function posterUrl(path, size = 'w92') { return `https://image.tmdb.org/t/p/${size}${path}`; }
+
+// items: [{ label, x, y }] in the chart's own data coordinates (category
+// index or value, matching what convertToPixel expects for that chart).
+function addPosterToppers(chart, items, { offsetY = 8 } = {}) {
+  const w = 30, h = 44;
+  const elements = [];
+  items.forEach(({ label, x, y }) => {
+    const info = GENRE_POSTERS[label];
+    if (!info) return;
+    let px, py;
+    try {
+      [px, py] = chart.convertToPixel({ xAxisIndex: 0, yAxisIndex: 0 }, [x, y]);
+    } catch (e) { return; }
+    if (px == null || py == null || Number.isNaN(px) || Number.isNaN(py)) return;
+    elements.push({
+      type: 'image',
+      id: `poster-${label}`,
+      style: {
+        image: posterUrl(info.poster_path), x: 0, y: 0, width: w, height: h,
+        shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.65)',
+      },
+      x: px - w / 2,
+      y: py - h - offsetY,
+      z: 50,
+      silent: true,
+    });
+  });
+  chart.setOption({ graphic: { elements } });
+}
+
+// A tooltip formatter that shows the genre's representative poster + title
+// alongside the value. Falls back to a plain label/value tooltip when the
+// category isn't a known genre (e.g. decade/language breakdowns).
+function genreTooltipFormatter(valueFormatter) {
+  return (params) => {
+    const p = Array.isArray(params) ? params[0] : params;
+    const name = p.name || (Array.isArray(p.value) ? p.value[0] : '');
+    const rawValue = Array.isArray(p.value) ? p.value[p.value.length - 1] : p.value;
+    const val = valueFormatter(rawValue);
+    const info = GENRE_POSTERS[name];
+    if (!info) return `<b>${name}</b><br/>${val}`;
+    return `
+      <div style="display:flex;gap:10px;align-items:flex-start;max-width:220px;">
+        <img src="${posterUrl(info.poster_path)}" style="width:50px;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,0.6);flex:none;">
+        <div>
+          <div style="font-weight:700;color:#f4efe4;">${name}</div>
+          <div style="font-size:12px;color:#b8b0a3;margin:2px 0 4px;">${val}</div>
+          <div style="font-size:10.5px;color:#7a7268;font-style:italic;">${info.title}</div>
+        </div>
+      </div>`;
+  };
+}
+
 function tooltipStyle() {
   return {
     backgroundColor: '#1c1815',
@@ -69,7 +135,7 @@ function tooltipStyle() {
   };
 }
 
-function barOption(categories, values, { color, valueFormatter = (v) => v, horizontal = false } = {}) {
+function barOption(categories, values, { color, valueFormatter = (v) => v, horizontal = false, genreAware = false } = {}) {
   const grad = gradientFill(color || cssVar('--gold'));
   const valueAxis = {
     type: 'value',
@@ -87,8 +153,11 @@ function barOption(categories, values, { color, valueFormatter = (v) => v, horiz
   };
   return {
     backgroundColor: 'transparent',
-    grid: { left: horizontal ? 90 : 48, right: 20, top: 20, bottom: horizontal ? 20 : (categories.length > 8 ? 60 : 32) },
-    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, ...tooltipStyle(), valueFormatter },
+    grid: { left: horizontal ? 90 : 48, right: 20, top: genreAware && !horizontal ? 66 : 20, bottom: horizontal ? 20 : (categories.length > 8 ? 60 : 32) },
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow' }, ...tooltipStyle(),
+      ...(genreAware ? { formatter: genreTooltipFormatter(valueFormatter) } : { valueFormatter }),
+    },
     xAxis: horizontal ? valueAxis : catAxis,
     yAxis: horizontal ? catAxis : valueAxis,
     series: [{
@@ -108,12 +177,21 @@ function bubbleOption(points, { xFmt = (v) => v, yFmt = (v) => v, xLabel = '', y
   const maxR = Math.max(...points.map((p) => p.r));
   return {
     backgroundColor: 'transparent',
-    grid: { left: 60, right: 24, top: 24, bottom: 48 },
+    grid: { left: 60, right: 24, top: 64, bottom: 48 },
     tooltip: {
       ...tooltipStyle(),
       formatter: (p) => {
         const pt = points[p.dataIndex];
-        return `<b>${pt.label}</b><br/>${xLabel}: ${xFmt(pt.x)}<br/>${yLabel}: ${yFmt(pt.y)}${pt.tooltipExtra ? '<br/>' + pt.tooltipExtra : ''}`;
+        const info = GENRE_POSTERS[pt.label];
+        const body = `<div style="font-weight:700;color:#f4efe4;">${pt.label}</div>
+          <div style="font-size:12px;color:#b8b0a3;margin:2px 0 4px;">${xLabel}: ${xFmt(pt.x)}<br/>${yLabel}: ${yFmt(pt.y)}</div>
+          ${pt.tooltipExtra ? `<div style="font-size:11px;color:#b8b0a3;">${pt.tooltipExtra}</div>` : ''}
+          ${info ? `<div style="font-size:10.5px;color:#7a7268;font-style:italic;margin-top:2px;">${info.title}</div>` : ''}`;
+        if (!info) return `<div style="max-width:200px;">${body}</div>`;
+        return `<div style="display:flex;gap:10px;align-items:flex-start;max-width:230px;">
+          <img src="${posterUrl(info.poster_path)}" style="width:50px;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,0.6);flex:none;">
+          <div>${body}</div>
+        </div>`;
       },
     },
     xAxis: {

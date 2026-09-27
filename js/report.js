@@ -33,7 +33,9 @@ function renderHeroBackdrop(posters) {
 Promise.all([
   loadMovies(),
   fetch('data/hero_posters.json').then((r) => r.json()).catch(() => []),
-]).then(([rows, posters]) => {
+  fetch('data/genre_posters.json').then((r) => r.json()).catch(() => ({})),
+]).then(([rows, posters, genrePosters]) => {
+  setGenrePosters(genrePosters);
   if (posters.length) {
     renderHeroBackdrop(posters);
     renderPosterMarquee(posters);
@@ -79,8 +81,8 @@ Promise.all([
   setText('f1-bottom-yield', bottom.medianYield.toFixed(2));
   lazyChart('chart-1', () => barOption(
     reliableFinGenres.map((g) => g.genre), reliableFinGenres.map((g) => g.medianYield),
-    { color: cssVar('--gold'), valueFormatter: (v) => `${v.toFixed(2)}x` },
-  ));
+    { color: cssVar('--gold'), valueFormatter: (v) => `${v.toFixed(2)}x`, genreAware: true },
+  ), (chart) => addPosterToppers(chart, reliableFinGenres.map((g, i) => ({ label: g.genre, x: i, y: g.medianYield }))));
 
   // ---- Finding 2: budget size vs. yield (genre bubbles) ----
   const adv = reliableFinGenres.find((g) => g.genre === 'Adventure');
@@ -96,7 +98,7 @@ Promise.all([
       tooltipExtra: `median yield ${g.medianYield.toFixed(2)}x · n=${g.n}`,
     })),
     { xFmt: (v) => `$${(v / 1e6).toFixed(0)}M`, yFmt: (v) => `$${(v / 1e6).toFixed(0)}M`, xLabel: 'Avg budget', yLabel: 'Avg revenue' },
-  ));
+  ), (chart) => addPosterToppers(chart, reliableFinGenres.map((g) => ({ label: g.genre, x: g.avgBudget, y: g.avgRevenue })), { offsetY: 14 }));
 
   // ---- Finding 3: rating and yield point in different directions ----
   const avgRatingByGenre = genres.map((g) => ({ genre: g, rating: mean(byGenre.get(g).map((r) => r.vote_average)) }))
@@ -109,8 +111,8 @@ Promise.all([
   setText('f3-horror-yield', top.medianYield.toFixed(2));
   lazyChart('chart-3', () => barOption(
     avgRatingByGenre.map((g) => g.genre), avgRatingByGenre.map((g) => g.rating),
-    { color: cssVar('--series-3'), valueFormatter: (v) => v.toFixed(1) },
-  ));
+    { color: cssVar('--series-3'), valueFormatter: (v) => v.toFixed(1), genreAware: true },
+  ), (chart) => addPosterToppers(chart, avgRatingByGenre.map((g, i) => ({ label: g.genre, x: i, y: g.rating }))));
 
   // ---- Finding 4: output boomed, then pulled back ----
   const byDecade = groupBy(rows, (r) => r.decade);
@@ -137,7 +139,8 @@ Promise.all([
   setText('f5-comedy-pct', ((comedy.count / rows.length) * 100).toFixed(1));
   setText('f5-drama-yield', dramaYield.medianYield.toFixed(2));
   setText('f5-comedy-yield', comedyYield.medianYield.toFixed(2));
-  lazyChart('chart-5', () => barOption(countByGenre.map((g) => g.genre), countByGenre.map((g) => g.count), { color: cssVar('--series-1') }));
+  lazyChart('chart-5', () => barOption(countByGenre.map((g) => g.genre), countByGenre.map((g) => g.count), { color: cssVar('--series-1'), genreAware: true }),
+    (chart) => addPosterToppers(chart, countByGenre.map((g, i) => ({ label: g.genre, x: i, y: g.count }))));
 
   // ---- Finding 6: foreign-language films rate higher, stay less visible ----
   const isEn = (r) => r.original_language === 'en';
@@ -166,8 +169,8 @@ Promise.all([
   setText('f7-ratio', (highB.avgBudget / lowB.avgBudget).toFixed(1));
   lazyChart('chart-7', () => barOption(
     byBudget.map((g) => g.genre), byBudget.map((g) => g.avgBudget),
-    { color: cssVar('--series-7'), valueFormatter: (v) => `$${(v / 1e6).toFixed(0)}M` },
-  ));
+    { color: cssVar('--series-7'), valueFormatter: (v) => `$${(v / 1e6).toFixed(0)}M`, genreAware: true },
+  ), (chart) => addPosterToppers(chart, byBudget.map((g, i) => ({ label: g.genre, x: i, y: g.avgBudget }))));
 
   // ---- Finding 8: runtime varies systematically by genre ----
   const runtimeByGenre = genres.map((g) => ({ genre: g, runtime: mean(byGenre.get(g).filter((r) => r.runtime > 0).map((r) => r.runtime)) }))
@@ -181,8 +184,8 @@ Promise.all([
   setText('f8-spread', (longest.runtime - shortest.runtime).toFixed(0));
   lazyChart('chart-8', () => barOption(
     runtimeByGenre.map((g) => g.genre), runtimeByGenre.map((g) => g.runtime),
-    { color: cssVar('--series-8'), valueFormatter: (v) => `${v.toFixed(0)} min` },
-  ));
+    { color: cssVar('--series-8'), valueFormatter: (v) => `${v.toFixed(0)} min`, genreAware: true },
+  ), (chart) => addPosterToppers(chart, runtimeByGenre.map((g, i) => ({ label: g.genre, x: i, y: g.runtime }))));
 
   initReveals();
   initTilt('.stat-tile, .chart-card');
