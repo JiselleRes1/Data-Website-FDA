@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Report</title>
+<title>Genre Yield Report</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <nav class="site-nav">
-  <span class="brand">TODO: Project Name</span>
+  <span class="brand">Genre Yield</span>
   <div class="links">
     <a href="index.html" class="active">Report</a>
     <a href="dashboard.html">Dashboard</a>
@@ -19,130 +19,202 @@
 <main class="page">
 
   <header class="report-header">
-    <h1>TODO: Report Title</h1>
+    <h1>Which Movie Genres Actually Pay Off?</h1>
     <p class="byline">By Jiselle Resendiz</p>
     <p class="summary">
-      TODO: one paragraph summarizing what the data covers (source, time span,
-      groups) and the two or three biggest findings, once a dataset is chosen.
+      This report analyzes 72,775 movies released between 1950 and 2025, drawn from TMDB's
+      full catalog, across 19 genres. Each movie carries its genre, release year, language,
+      runtime, critic rating, and — where TMDB reports it — its production budget and box-office
+      revenue. The headline finding: cheaper genres often out-earn expensive ones on a per-dollar
+      basis, and the genres audiences and critics rate highest are rarely the genres that make the
+      most money back on their budget.
     </p>
   </header>
 
-  <!-- Headline numbers: at least 4, each with a label -->
   <section class="stat-row" id="headline-stats">
     <div class="stat-tile">
-      <div class="value">TODO</div>
-      <div class="label">Headline number 1</div>
+      <div class="value" id="stat-movies">—</div>
+      <div class="label">Movies analyzed</div>
     </div>
     <div class="stat-tile">
-      <div class="value">TODO</div>
-      <div class="label">Headline number 2</div>
+      <div class="value" id="stat-genres">—</div>
+      <div class="label">Genres covered</div>
     </div>
     <div class="stat-tile">
-      <div class="value">TODO</div>
-      <div class="label">Headline number 3</div>
+      <div class="value" id="stat-years">—</div>
+      <div class="label">Years of releases</div>
     </div>
     <div class="stat-tile">
-      <div class="value">TODO</div>
-      <div class="label">Headline number 4</div>
+      <div class="value" id="stat-top-genre">—</div>
+      <div class="label">Highest median yield</div>
     </div>
   </section>
 
-  <!-- 8+ finding sections. Each: heading = the finding, 1-2 paragraphs with
-       the numbers, and a chart. Duplicate this <section> block per finding. -->
-
   <section class="finding" id="finding-1">
-    <h2>Finding 1: TODO heading that states the finding</h2>
-    <p>TODO paragraph explaining the finding and the numbers behind it.</p>
+    <h2>Horror delivers the highest return on every dollar spent</h2>
+    <p>
+      Among the <span id="f1-fin-count">—</span> movies in the dataset with a reported budget
+      and revenue, <span id="f1-top-genre">—</span> has the highest median yield of any genre at
+      <span id="f1-top-yield">—</span>x revenue per dollar budgeted — despite an average budget of
+      only <span id="f1-top-budget">—</span>, one of the smallest of the 19 genres. At the other
+      end, <span id="f1-bottom-genre">—</span> returns a median of just
+      <span id="f1-bottom-yield">—</span>x.
+    </p>
     <div class="chart-card">
       <canvas id="chart-1"></canvas>
-      <p class="chart-caption">TODO: what this chart shows, and units.</p>
+      <p class="chart-caption">Median (revenue ÷ budget) by genre, genres with at least 30 financially-reported titles.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-2">
-    <h2>Finding 2: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>Bigger budgets don't buy better returns</h2>
+    <p>
+      Adventure and Animation carry the largest average production budgets of any genre —
+      <span id="f2-adv-budget">—</span> and <span id="f2-anim-budget">—</span> respectively — and
+      generate enormous absolute box office. But per dollar spent, their median yields
+      (<span id="f2-adv-yield">—</span>x and <span id="f2-anim-yield">—</span>x) both trail the
+      top genre's <span id="f2-top-yield">—</span>x. Absolute blockbuster revenue and efficient
+      return on budget are two different games.
+    </p>
     <div class="chart-card">
       <canvas id="chart-2"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Each bubble is a genre: position is average budget vs. average revenue, size is number of financially-reported titles.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-3">
-    <h2>Finding 3: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>The best-reviewed genres aren't the best-paying ones</h2>
+    <p>
+      Horror is TMDB voters' lowest-rated genre of the 19, averaging
+      <span id="f3-horror-rating">—</span>/10 — yet it tops the yield leaderboard.
+      <span id="f3-top-rated-genre">—</span> is rated highest at
+      <span id="f3-top-rated-value">—</span>/10, but doesn't come close to Horror's
+      <span id="f3-horror-yield">—</span>x median return. Critical acclaim and financial
+      efficiency point in different directions.
+    </p>
     <div class="chart-card">
       <canvas id="chart-3"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Average TMDB vote by genre, all 19 genres.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-4">
-    <h2>Finding 4: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>Output boomed for six decades, then pulled back</h2>
+    <p>
+      The dataset's release volume grew from <span id="f4-1950">—</span> films in the 1950s to
+      <span id="f4-2010">—</span> in the 2010s — a <span id="f4-multiplier">—</span>x increase —
+      before falling to <span id="f4-2020">—</span> in the 2020s so far (a partial decade, but a
+      sharp reversal from the prior trend).
+    </p>
     <div class="chart-card">
       <canvas id="chart-4"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Number of movies released per decade.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-5">
-    <h2>Finding 5: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>Drama and Comedy dominate production, not the yield chart</h2>
+    <p>
+      Drama is the single largest genre in the dataset with <span id="f5-drama-count">—</span>
+      films (<span id="f5-drama-pct">—</span>% of all releases), and Comedy follows with
+      <span id="f5-comedy-count">—</span> (<span id="f5-comedy-pct">—</span>%). Yet their median
+      yields — <span id="f5-drama-yield">—</span>x and <span id="f5-comedy-yield">—</span>x —
+      both sit in the middle of the pack. Making the most movies in a genre doesn't mean that
+      genre pays the best per dollar.
+    </p>
     <div class="chart-card">
       <canvas id="chart-5"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Number of movies by genre, all 19 genres, sorted by volume.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-6">
-    <h2>Finding 6: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>Foreign-language films rate better but stay far less visible</h2>
+    <p>
+      Non-English-language films average a higher critic rating —
+      <span id="f6-nonen-rating">—</span> vs. <span id="f6-en-rating">—</span> out of 10 for
+      English-language films — but score barely more than half the popularity,
+      <span id="f6-nonen-pop">—</span> vs. <span id="f6-en-pop">—</span>. English is the original
+      language for <span id="f6-en-pct">—</span>% of the dataset.
+    </p>
     <div class="chart-card">
       <canvas id="chart-6"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Average TMDB vote by original language, top 10 languages by title count.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-7">
-    <h2>Finding 7: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>The cost of making a movie varies by an order of magnitude across genres</h2>
+    <p>
+      Average production budgets range from <span id="f7-low-budget">—</span> for
+      <span id="f7-low-genre">—</span> to <span id="f7-high-budget">—</span> for
+      <span id="f7-high-genre">—</span> — roughly a <span id="f7-ratio">—</span>x gap between the
+      cheapest and most expensive genre to produce, among genres with at least 30
+      financially-reported titles.
+    </p>
     <div class="chart-card">
       <canvas id="chart-7"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Average production budget by genre, sorted highest to lowest.</p>
     </div>
   </section>
 
   <section class="finding" id="finding-8">
-    <h2>Finding 8: TODO heading</h2>
-    <p>TODO paragraph.</p>
+    <h2>Runtime is a genre signature, not a coincidence</h2>
+    <p>
+      <span id="f8-shortest-genre">—</span> runs shortest at
+      <span id="f8-shortest-runtime">—</span> minutes on average, reflecting its concentration of
+      shorts and children's features, while <span id="f8-longest-genre">—</span> runs longest at
+      <span id="f8-longest-runtime">—</span> minutes — a <span id="f8-spread">—</span>-minute
+      spread across the 19 genres.
+    </p>
     <div class="chart-card">
       <canvas id="chart-8"></canvas>
-      <p class="chart-caption">TODO caption.</p>
+      <p class="chart-caption">Average runtime (minutes) by genre, sorted longest to shortest.</p>
     </div>
   </section>
 
-  <!-- Closing methodology section -->
   <section class="methodology" id="methodology">
     <h2>About this data</h2>
     <dl>
       <dt>Source</dt>
-      <dd>TODO: where the data comes from (organization, URL, date retrieved).</dd>
+      <dd>
+        <a href="https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies" target="_blank" rel="noopener">
+          Full TMDB Movies Dataset</a> (asaniczka, Kaggle), scraped from The Movie Database API,
+        downloaded 2026-09-27.
+      </dd>
 
       <dt>What one row is</dt>
-      <dd>TODO: e.g. "one company in one fiscal year" or "one player in one game."</dd>
+      <dd>One row is one movie with a "Released" status on TMDB, identified by its release date and its primary genre.</dd>
 
-      <dt>Rows dropped</dt>
-      <dd>TODO: any rows excluded and why (duplicates, missing keys, out-of-range dates, etc.), or "none."</dd>
+      <dt>Rows dropped and why</dt>
+      <dd>
+        From ~1.5 million raw rows: kept only <code>status == "Released"</code>; dropped rows with
+        an unparseable release date or a release year outside 1950&ndash;2026 (earlier dates in the
+        raw file are data-entry errors); dropped rows with no listed genre (took the first listed
+        genre as each movie's <code>primary_genre</code> when a movie lists several); dropped rows
+        with fewer than 10 TMDB votes, since the raw file is dominated by obscure, essentially
+        unrated entries that would otherwise swamp every genre-level average. Result: 72,775 rows.
+        See <code>scripts/clean_data.py</code> for the exact code.
+      </dd>
 
       <dt>How rates and averages are computed</dt>
-      <dd>TODO: the exact formula for every rate, ratio, or average reported above (e.g. "win rate = wins / games played").</dd>
+      <dd>
+        <strong>Yield</strong> = revenue &divide; budget, computed only for movies with both budget
+        &gt; 0 and revenue &gt; 0 reported (8,645 of 72,775 movies &mdash; TMDB doesn't have real
+        financial data for most titles, so a budget or revenue of 0 means "not reported," not "zero
+        dollars"). Genre-level yield uses the <strong>median</strong> (not the mean) to avoid a
+        handful of outlier blockbusters/flops dominating the number, and is only reported for
+        genres with at least 30 financially-reported titles. All other averages (rating, popularity,
+        runtime) are means over the full 72,775-row dataset unless stated otherwise.
+      </dd>
     </dl>
   </section>
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/data.js"></script>
 <script src="js/report.js"></script>
 </body>
 </html>
