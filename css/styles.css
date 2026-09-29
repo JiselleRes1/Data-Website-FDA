@@ -650,11 +650,15 @@ table.data-table tbody tr:hover { background: rgba(232,185,62,0.06); }
     "wide wide";
   gap: 1.5rem;
 }
-.chart-card--hero { grid-area: hero; }
+.chart-card--hero { grid-area: hero; display: flex; flex-direction: column; }
 .chart-card--side1 { grid-area: side1; }
 .chart-card--side2 { grid-area: side2; }
 .chart-card--wide { grid-area: wide; }
-.chart-card--hero .echart { height: 460px; }
+/* The hero card is stretched tall by the grid (it spans both side-card
+   rows) — let its chart fill that height instead of leaving dead space
+   below a fixed-height chart. */
+.chart-card--hero .echart { flex: 1 1 auto; min-height: 300px; }
+.chart-card--hero .chart-caption { flex: none; }
 .chart-card--side1 .echart, .chart-card--side2 .echart { height: 205px; }
 .chart-card--wide .echart { height: 360px; }
 @media (max-width: 900px) {
@@ -662,7 +666,7 @@ table.data-table tbody tr:hover { background: rgba(232,185,62,0.06); }
     grid-template-columns: 1fr;
     grid-template-areas: "hero" "side1" "side2" "wide";
   }
-  .chart-card--hero .echart { height: 360px; }
+  .chart-card--hero .echart { flex: none; height: 360px; }
 }
 
 /* ===== Genre Face-Off ===== */

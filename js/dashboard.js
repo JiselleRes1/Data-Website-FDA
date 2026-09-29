@@ -16,6 +16,7 @@ const GENRE_ACCENT_ORDER = [
   'Mystery', 'Western', 'War', 'History',
 ];
 const RATING_TIER_ORDER = ['<5', '5-6', '6-7', '7-8', '8+'];
+const BREAKDOWN_LABELS_PLURAL = { genre: 'genres', decade: 'decades', language: 'original languages', rating_tier: 'rating tiers' };
 
 function genreAccentColor(genre) {
   const idx = GENRE_ACCENT_ORDER.indexOf(genre);
@@ -86,12 +87,24 @@ function renderStats(rows) {
   else { yEl.textContent = 'n/a'; yEl.dataset.raw = 0; }
 }
 
+function updateChart1Caption(breakdown, measure, entries) {
+  const el = document.getElementById('chart1-caption');
+  if (!el) return;
+  if (!entries.length) { el.textContent = 'No rows match the current filters.'; return; }
+  const top = entries[0];
+  const hint = breakdown === 'genre' ? ' Hover a bar for its defining title.' : '';
+  el.textContent = `Showing ${entries.length} ${BREAKDOWN_LABELS_PLURAL[breakdown]}, ranked by ${MEASURE_LABELS[measure].toLowerCase()}. `
+    + `${top.label} leads at ${fmtNumber(top.value, measure)}.${hint}`;
+}
+
 function renderBarChart(chartNum, rows) {
   const measure = document.querySelector(`select[data-role="measure"][data-chart="${chartNum}"]`).value;
   const breakdown = document.querySelector(`select[data-role="breakdown"][data-chart="${chartNum}"]`).value;
   const entries = aggregateBreakdown(rows, breakdown, measure);
   const colorVar = ['--series-1', '--series-3', '--series-5'][chartNum - 1] || '--gold';
   const isGenre = breakdown === 'genre';
+
+  if (chartNum === 1) updateChart1Caption(breakdown, measure, entries);
 
   if (chartNum === 1 && chart1ViewType === 'radial') {
     lazyChart('chart-1', () => radialBarOption(
