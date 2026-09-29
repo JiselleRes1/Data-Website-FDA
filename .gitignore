@@ -8,3 +8,6 @@ node_modules/
 data/TMDB_movie_dataset_v11.csv
 data/archive.zip
 data/*.zip
+
+# Course submission file — contains a student ID, kept out of the public repo.
+submission.txt
