@@ -62,7 +62,9 @@ function aggregateBreakdown(rows, breakdownType, measure) {
   const keyFn = breakdownKeyFns(new Set(TOP_LANGUAGES))[breakdownType];
   const groups = groupBy(rows, keyFn);
   const entries = [...groups.entries()].map(([label, g]) => ({ label, n: g.length, value: computeMeasure(g, measure) }));
-  return sortEntries(breakdownType, entries);
+  const sorted = sortEntries(breakdownType, entries);
+  if (breakdownType === 'language') sorted.forEach((e) => { e.label = languageName(e.label); });
+  return sorted;
 }
 
 function applyFilters() {
@@ -129,7 +131,8 @@ function renderBubbleChart(rows) {
   const points = [...groups.entries()]
     .filter(([, g]) => g.length >= 5)
     .map(([label, g]) => ({
-      label, x: mean(g.map((r) => r.budget)), y: mean(g.map((r) => r.revenue)),
+      label: groupByType === 'language' ? languageName(label) : label,
+      x: mean(g.map((r) => r.budget)), y: mean(g.map((r) => r.revenue)),
       n: g.length, medYield: median(g.map((r) => r.yield)),
     }))
     .map((p) => ({ ...p, r: sizeBy === 'count' ? p.n : p.medYield, tooltipExtra: `n=${p.n} · median yield ${p.medYield.toFixed(2)}x` }));
@@ -153,7 +156,9 @@ function computeDataSection(rows) {
     medYield: (() => { const fin = g.filter((r) => r.has_financials); return fin.length ? median(fin.map((r) => r.yield)) : null; })(),
     value: computeMeasure(g, measure),
   }));
-  return { breakdown, measure, rows: sortEntries(breakdown, entries) };
+  const sorted = sortEntries(breakdown, entries);
+  if (breakdown === 'language') sorted.forEach((e) => { e.label = languageName(e.label); });
+  return { breakdown, measure, rows: sorted };
 }
 
 function renderTable(data) {
@@ -259,7 +264,7 @@ function populateFilters(rows) {
   TOP_LANGUAGES = langCounts.slice(0, 12).map(([lang]) => lang);
   const langSel = document.getElementById('filter-language');
   for (const [lang, count] of langCounts.slice(0, 20)) {
-    langSel.add(new Option(`${lang} — ${count.toLocaleString()} titles`, lang));
+    langSel.add(new Option(`${languageName(lang)} — ${count.toLocaleString()} titles`, lang));
   }
 
   return genres;

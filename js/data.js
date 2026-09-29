@@ -105,6 +105,28 @@ const MEASURE_LABELS = {
   median_yield: 'Median yield (revenue ÷ budget)',
 };
 
+// Turns an ISO 639-1 code (e.g. "ja", "ko", "pt") into a readable language
+// name (e.g. "Japanese", "Korean", "Portuguese") using the browser's own
+// language database, so it covers every code in the dataset without a
+// hand-maintained list. Falls back to the raw code if the browser can't
+// resolve it. "cn" is a TMDB-specific code for Cantonese (not standard
+// ISO 639-1, which uses "zh" for Chinese) — handled as a special case.
+const LANGUAGE_NAME_OVERRIDES = { cn: 'Cantonese' };
+let _languageDisplay = null;
+try { _languageDisplay = new Intl.DisplayNames(['en'], { type: 'language' }); } catch (e) { /* unsupported */ }
+
+function languageName(code) {
+  if (!code || code === 'Other') return code;
+  if (LANGUAGE_NAME_OVERRIDES[code]) return LANGUAGE_NAME_OVERRIDES[code];
+  if (!_languageDisplay) return code.toUpperCase();
+  try {
+    const name = _languageDisplay.of(code);
+    return name && name.toLowerCase() !== code.toLowerCase() ? name : code.toUpperCase();
+  } catch (e) {
+    return code.toUpperCase();
+  }
+}
+
 function fmtNumber(n, measure) {
   if (measure === 'total_revenue') {
     if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;

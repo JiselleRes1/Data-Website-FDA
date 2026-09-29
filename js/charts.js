@@ -171,6 +171,12 @@ function tooltipStyle() {
 
 function barOption(categories, values, { color, valueFormatter = (v) => v, horizontal = false, genreAware = false } = {}) {
   const grad = gradientFill(color || cssVar('--gold'));
+  // Rotation/margin adapt to how long the longest label actually is, so
+  // full language names ("Portuguese", "Cantonese") or long genre names
+  // ("Science Fiction") get enough room without needing a manual flag.
+  const maxLen = Math.max(0, ...categories.map((c) => String(c).length));
+  const rotate = horizontal ? 0 : (maxLen > 10 ? 45 : categories.length > 8 ? 35 : 0);
+  const bottomMargin = horizontal ? 20 : (maxLen > 10 ? 92 : categories.length > 8 ? 62 : 32);
   const valueAxis = {
     type: 'value',
     axisLine: { show: false },
@@ -183,11 +189,11 @@ function barOption(categories, values, { color, valueFormatter = (v) => v, horiz
     data: categories,
     axisLine: { lineStyle: { color: CHART_GRID() } },
     axisTick: { show: false },
-    axisLabel: { color: CHART_TEXT(), fontSize: 11, interval: 0, rotate: horizontal ? 0 : (categories.length > 8 ? 35 : 0) },
+    axisLabel: { color: CHART_TEXT(), fontSize: 11, interval: 0, rotate },
   };
   return {
     backgroundColor: 'transparent',
-    grid: { left: horizontal ? 90 : 48, right: 20, top: genreAware && !horizontal ? 66 : 20, bottom: horizontal ? 20 : (categories.length > 8 ? 60 : 32) },
+    grid: { left: horizontal ? 90 : 48, right: 20, top: genreAware && !horizontal ? 66 : 20, bottom: bottomMargin },
     tooltip: {
       trigger: 'axis', axisPointer: { type: 'shadow' }, ...tooltipStyle(),
       ...(genreAware ? { formatter: genreTooltipFormatter(valueFormatter) } : { valueFormatter }),

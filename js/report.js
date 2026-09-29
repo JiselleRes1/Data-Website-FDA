@@ -168,7 +168,7 @@ Promise.all([
   const byLang = groupBy(rows, (r) => r.original_language);
   const topLangs = [...byLang.entries()].sort((a, b) => b[1].length - a[1].length).slice(0, 10);
   lazyChart('chart-6', () => barOption(
-    topLangs.map(([code]) => code), topLangs.map(([, g]) => mean(g.map((r) => r.vote_average))),
+    topLangs.map(([code]) => languageName(code)), topLangs.map(([, g]) => mean(g.map((r) => r.vote_average))),
     { color: cssVar('--series-5'), valueFormatter: (v) => v.toFixed(1) },
   ));
 
