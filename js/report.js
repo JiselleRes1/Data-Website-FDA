@@ -51,7 +51,7 @@ Promise.all([
 
   const totalMinutes = sum(rows.map((r) => r.runtime || 0));
   const yearsEl = document.getElementById('intermission-years');
-  if (yearsEl) countUp(yearsEl, totalMinutes / 60 / 24 / 365.25, { decimals: 1 });
+  if (yearsEl) countUp(yearsEl, totalMinutes / 60 / 24 / 365.25, { decimals: 1, pulse: true });
   const hoursEl = document.getElementById('intermission-hours');
   if (hoursEl) countUp(hoursEl, totalMinutes / 60, { decimals: 0 });
 
@@ -75,7 +75,7 @@ Promise.all([
 
   // ---- Hero + headline numbers (animated count-up) ----
   const heroStat = document.getElementById('hero-stat-value');
-  if (heroStat) countUp(heroStat, top.medianYield, { decimals: 2, suffix: 'x' });
+  if (heroStat) countUp(heroStat, top.medianYield, { decimals: 2, suffix: 'x', pulse: true });
   setText('hero-stat-genre', top.genre);
 
   const statMovies = document.getElementById('stat-movies');

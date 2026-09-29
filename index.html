@@ -4,11 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Genre Yield</title>
-<link rel="stylesheet" href="css/styles.css?v=3">
+<link rel="stylesheet" href="css/styles.css?v=5">
 </head>
 <body>
 
 <div class="grain"></div>
+<div class="bg-mesh" aria-hidden="true">
+  <div class="mesh-blob mesh-blob-1"></div>
+  <div class="mesh-blob mesh-blob-2"></div>
+  <div class="mesh-blob mesh-blob-3"></div>
+</div>
 <div class="scroll-progress"></div>
 
 <nav class="site-nav">
@@ -35,8 +40,9 @@
     from production budget to box office to find out which genres are the
     smartest bets — and which just look expensive.
   </p>
-  <div class="hero-stat">
-    <span class="value" id="hero-stat-value">0.00x</span>
+  <div class="hero-stat pulse-anchor">
+    <span class="flash-ring" id="hero-flash"></span>
+    <span class="value pulse-text" id="hero-stat-value">0.00x</span>
     <span class="desc">median return on every dollar budgeted for <strong id="hero-stat-genre">—</strong> — the highest of any genre in the dataset</span>
   </div>
   <div class="scroll-cue">Scroll ↓</div>
@@ -165,9 +171,10 @@
           <circle cx="18" cy="32" r="4" fill="var(--series-1)"></circle>
         </svg>
       </div>
-      <div class="intermission-text">
+      <div class="intermission-text pulse-anchor">
+        <span class="flash-ring" id="intermission-flash"></span>
         <span class="kicker">Intermission</span>
-        <h2>Back to back, that's <em id="intermission-years">—</em> years of movies</h2>
+        <h2>Back to back, that's <em class="pulse-text" id="intermission-years">—</em> years of movies</h2>
         <p>Total combined runtime of all 72,775 films in this dataset: <span id="intermission-hours">—</span> hours.</p>
       </div>
     </div>
@@ -283,9 +290,9 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <!-- Bump every ?v=N below whenever css/styles.css or js/*.js changes -->
-<script src="js/data.js?v=3"></script>
-<script src="js/charts.js?v=3"></script>
-<script src="js/motion.js?v=3"></script>
-<script src="js/report.js?v=3"></script>
+<script src="js/data.js?v=5"></script>
+<script src="js/charts.js?v=5"></script>
+<script src="js/motion.js?v=5"></script>
+<script src="js/report.js?v=5"></script>
 </body>
 </html>

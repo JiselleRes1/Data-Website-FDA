@@ -36,8 +36,22 @@
     });
   };
 
+  // Fires the one-shot glow-pulse near a "payoff" number (see .flash-ring /
+  // .pulse-text in styles.css). Looks for a flash-ring inside the nearest
+  // .pulse-anchor ancestor, plus el's own .pulse-text class if present.
+  window.firePulse = function firePulse(el) {
+    const anchor = el.closest('.pulse-anchor');
+    const ring = anchor && anchor.querySelector('.flash-ring');
+    [ring, el.classList.contains('pulse-text') ? el : null].forEach((target) => {
+      if (!target) return;
+      target.classList.remove('firing');
+      void target.offsetWidth; // reflow, so re-adding the class restarts the animation
+      target.classList.add('firing');
+    });
+  };
+
   // ---- Count-up number animation ----
-  window.countUp = function countUp(el, target, { decimals = 0, prefix = '', suffix = '', duration = 1.4 } = {}) {
+  window.countUp = function countUp(el, target, { decimals = 0, prefix = '', suffix = '', duration = 1.4, pulse = false } = {}) {
     const obj = { v: 0 };
     ScrollTrigger.create({
       trigger: el,
@@ -53,6 +67,7 @@
               minimumFractionDigits: decimals, maximumFractionDigits: decimals,
             }) + suffix;
           },
+          onComplete: () => { if (pulse) firePulse(el); },
         });
       },
     });

@@ -77,6 +77,60 @@ a:hover { text-decoration: underline; }
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
+/* ===== Drifting ambient gradient mesh (global background, both pages) ===== */
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mesh-blob {
+  position: absolute;
+  width: min(38vw, 560px);
+  height: min(38vw, 560px);
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.045;
+  will-change: transform;
+}
+.mesh-blob-1 { background: var(--gold); top: -12%; left: -10%; animation: drift1 36s ease-in-out infinite; }
+.mesh-blob-2 { background: var(--crimson); top: 35%; right: -18%; animation: drift2 44s ease-in-out infinite; }
+.mesh-blob-3 { background: var(--series-3); bottom: -18%; left: 15%; animation: drift3 40s ease-in-out infinite; }
+@keyframes drift1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(8vw, 6vh) scale(1.15); } }
+@keyframes drift2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-9vw, -5vh) scale(0.9); } }
+@keyframes drift3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(6vw, -8vh) scale(1.1); } }
+@media (prefers-reduced-motion: reduce) {
+  .mesh-blob { animation: none; }
+}
+
+/* ===== Payoff glow-pulse (fires once when a big stat finishes counting up) ===== */
+.pulse-anchor { position: relative; }
+.flash-ring {
+  position: absolute;
+  inset: -50px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+.flash-ring.firing { animation: flash-ring-anim 0.9s ease-out; }
+@keyframes flash-ring-anim {
+  0% { opacity: 0; transform: scale(0.6); }
+  25% { opacity: 0.4; }
+  100% { opacity: 0; transform: scale(1.7); }
+}
+.pulse-text.firing { animation: pulse-brightness 0.9s ease-out; }
+@keyframes pulse-brightness {
+  0% { filter: brightness(1); }
+  25% { filter: brightness(1.4); }
+  100% { filter: brightness(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash-ring.firing, .pulse-text.firing { animation: none; }
+}
+
 /* ===== Scroll progress bar ===== */
 .scroll-progress {
   position: fixed;
