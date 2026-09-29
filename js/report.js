@@ -30,6 +30,13 @@ function renderHeroBackdrop(posters) {
   el.innerHTML = pick.map((p) => `<img src="${POSTER_BASE}${p.poster_path}" alt="" loading="lazy">`).join('');
 }
 
+function renderIntermissionBackdrop(posters) {
+  const el = document.getElementById('intermission-backdrop');
+  if (!el) return;
+  const pick = posters.slice(-10);
+  el.innerHTML = pick.map((p) => `<img src="${POSTER_BASE}${p.poster_path}" alt="" loading="lazy">`).join('');
+}
+
 Promise.all([
   loadMovies(),
   fetch('data/hero_posters.json').then((r) => r.json()).catch(() => []),
@@ -39,7 +46,14 @@ Promise.all([
   if (posters.length) {
     renderHeroBackdrop(posters);
     renderPosterMarquee(posters);
+    renderIntermissionBackdrop(posters);
   }
+
+  const totalMinutes = sum(rows.map((r) => r.runtime || 0));
+  const yearsEl = document.getElementById('intermission-years');
+  if (yearsEl) countUp(yearsEl, totalMinutes / 60 / 24 / 365.25, { decimals: 1 });
+  const hoursEl = document.getElementById('intermission-hours');
+  if (hoursEl) countUp(hoursEl, totalMinutes / 60, { decimals: 0 });
 
   const genres = [...new Set(rows.map((r) => r.primary_genre))];
   const finRows = rows.filter((r) => r.has_financials);

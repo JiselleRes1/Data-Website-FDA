@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Genre Yield</title>
-<link rel="stylesheet" href="css/styles.css?v=1">
+<link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body>
 
@@ -77,6 +77,7 @@
   </section>
 
   <section class="finding reveal" id="finding-1">
+    <div class="finding-glow" style="--glow-color: var(--gold)"></div>
     <div class="finding-text">
       <span class="ordinal">01</span>
       <h2>Horror delivers the highest return on every dollar spent</h2>
@@ -95,6 +96,7 @@
   </section>
 
   <section class="finding reveal alt" id="finding-2">
+    <div class="finding-glow" style="--glow-color: var(--series-4)"></div>
     <div class="finding-text">
       <span class="ordinal">02</span>
       <h2>Bigger budgets don't buy better returns</h2>
@@ -112,6 +114,7 @@
   </section>
 
   <section class="finding reveal" id="finding-3">
+    <div class="finding-glow" style="--glow-color: var(--series-3)"></div>
     <div class="finding-text">
       <span class="ordinal">03</span>
       <h2>The best-reviewed genres aren't the best-paying ones</h2>
@@ -129,6 +132,7 @@
   </section>
 
   <section class="finding reveal alt" id="finding-4">
+    <div class="finding-glow" style="--glow-color: var(--series-2)"></div>
     <div class="finding-text">
       <span class="ordinal">04</span>
       <h2>Output boomed for six decades, then pulled back</h2>
@@ -143,7 +147,33 @@
     </div>
   </section>
 
+  <section class="intermission reveal">
+    <div class="intermission-backdrop" id="intermission-backdrop"></div>
+    <div class="intermission-scrim"></div>
+    <div class="intermission-content">
+      <div class="reel" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="var(--gold-2)" stroke-width="1.5" opacity="0.5"></circle>
+          <circle cx="50" cy="50" r="8" fill="none" stroke="var(--gold)" stroke-width="2"></circle>
+          <line x1="50" y1="50" x2="50" y2="6" stroke="var(--gold)" stroke-width="2"></line>
+          <circle cx="50" cy="12" r="4" fill="var(--gold)"></circle>
+          <circle cx="82" cy="32" r="4" fill="var(--series-2)"></circle>
+          <circle cx="82" cy="68" r="4" fill="var(--series-3)"></circle>
+          <circle cx="50" cy="88" r="4" fill="var(--series-5)"></circle>
+          <circle cx="18" cy="68" r="4" fill="var(--series-7)"></circle>
+          <circle cx="18" cy="32" r="4" fill="var(--series-1)"></circle>
+        </svg>
+      </div>
+      <div class="intermission-text">
+        <span class="kicker">Intermission</span>
+        <h2>Back to back, that's <em id="intermission-years">—</em> years of movies</h2>
+        <p>Total combined runtime of all 72,775 films in this dataset: <span id="intermission-hours">—</span> hours.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="finding reveal" id="finding-5">
+    <div class="finding-glow" style="--glow-color: var(--series-1)"></div>
     <div class="finding-text">
       <span class="ordinal">05</span>
       <h2>Drama and Comedy dominate production, not the yield chart</h2>
@@ -161,6 +191,7 @@
   </section>
 
   <section class="finding reveal alt" id="finding-6">
+    <div class="finding-glow" style="--glow-color: var(--series-5)"></div>
     <div class="finding-text">
       <span class="ordinal">06</span>
       <h2>Foreign-language films rate better but stay far less visible</h2>
@@ -178,6 +209,7 @@
   </section>
 
   <section class="finding reveal" id="finding-7">
+    <div class="finding-glow" style="--glow-color: var(--series-7)"></div>
     <div class="finding-text">
       <span class="ordinal">07</span>
       <h2>The cost of making a movie varies by an order of magnitude</h2>
@@ -194,6 +226,7 @@
   </section>
 
   <section class="finding reveal alt" id="finding-8">
+    <div class="finding-glow" style="--glow-color: var(--series-8)"></div>
     <div class="finding-text">
       <span class="ordinal">08</span>
       <h2>Runtime is a genre signature, not a coincidence</h2>
@@ -249,9 +282,9 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <!-- Bump every ?v=N below whenever css/styles.css or js/*.js changes -->
-<script src="js/data.js?v=1"></script>
-<script src="js/charts.js?v=1"></script>
-<script src="js/motion.js?v=1"></script>
-<script src="js/report.js?v=1"></script>
+<script src="js/data.js?v=2"></script>
+<script src="js/charts.js?v=2"></script>
+<script src="js/motion.js?v=2"></script>
+<script src="js/report.js?v=2"></script>
 </body>
 </html>
