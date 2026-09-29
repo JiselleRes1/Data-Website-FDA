@@ -46,11 +46,19 @@ function lazyChart(domId, optionFn, afterFn) {
     if (!chart) {
       chart = echarts.init(dom, null, { renderer: 'canvas' });
       chartInstances.set(domId, chart);
-      window.addEventListener('resize', () => {
+      const onResize = () => {
         chart.resize();
         if (chart._lastAfterFn) chart._lastAfterFn(chart);
-      });
+      };
+      window.addEventListener('resize', onResize);
+      chart._removeResizeListener = () => window.removeEventListener('resize', onResize);
     }
+    // Force a full canvas clear before every render. Without this, switching
+    // between very different layouts on the same instance (e.g. cartesian
+    // bars -> polar bars for the genre wheel) can leave stale pixels behind:
+    // ECharts' dirty-rect repaint optimization doesn't always invalidate the
+    // old shapes' region when the coordinate system itself changes.
+    chart.clear();
     chart._lastAfterFn = afterFn;
     chart.setOption(optionFn(), true);
     if (afterFn) {
@@ -76,6 +84,22 @@ function lazyChart(domId, optionFn, afterFn) {
   }
 
   return apply;
+}
+
+// Fully disposes and forgets a chart instance. Use before switching a chart
+// to a fundamentally different coordinate system (e.g. cartesian bars ->
+// polar wheel) — reusing the instance across such a switch can leave its
+// in-flight morph animation visually stuck mid-transition if the toggle
+// happens faster than the animation duration. A fresh instance has nothing
+// to morph from, so it just draws the new option cleanly.
+function disposeChart(domId) {
+  const chart = chartInstances.get(domId);
+  if (chart) {
+    if (chart._removeResizeListener) chart._removeResizeListener();
+    chart.dispose();
+  }
+  chartInstances.delete(domId);
+  chartLatestApply.delete(domId);
 }
 
 // ---- Poster medallions + rich poster tooltips (decorative, genre-aware) ----

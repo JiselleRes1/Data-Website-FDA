@@ -466,6 +466,7 @@ Promise.all([
 
   setupSegmented('chart1-viewtype', (val) => {
     chart1ViewType = val;
+    disposeChart('chart-1');
     renderBarChart(1, applyFilters());
   });
   setupSegmented('view-toggle', (val) => {
