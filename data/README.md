@@ -11,8 +11,10 @@ Scraped from The Movie Database (TMDB) API, ~1.5 million movie records, updated 
 
 | File | Tracked in git? | What it is |
 |---|---|---|
-| `TMDB_movie_dataset_v11.csv` | No (too large, ~660MB) | The raw download. Re-download from the Kaggle link above and place it here to reproduce `movies_clean.csv`. |
-| `movies_clean.csv` | Yes | The cleaned dataset the site actually loads. Produced by `scripts/clean_data.py`. |
+| `TMDB_movie_dataset_v11.csv` | No (too large, ~660MB) | The raw download. Re-download from the Kaggle link above and place it here to reproduce the files below. |
+| `movies_clean.csv` | Yes | The cleaned dataset the site loads for every chart, stat, and table. Produced by `scripts/clean_data.py`. |
+| `genre_posters.json` | Yes | One representative poster (title + TMDB poster path) per genre, used purely as a decorative "poster medallion" on genre charts and in tooltips. Produced by `scripts/extract_genre_posters.py`. Not used in any analysis. |
+| `hero_posters.json` | Yes | The 48 most popular titles with poster paths, used for the decorative poster marquee/backdrop on both pages. Produced by `scripts/extract_hero_posters.py`. Not used in any analysis. |
 
 ## What one row is
 
