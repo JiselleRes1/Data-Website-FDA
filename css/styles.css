@@ -416,7 +416,10 @@ a:hover { text-decoration: underline; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.5rem;
-  box-shadow: var(--shadow-card);
+  /* --glow-color is set on the ancestor .finding (report) or the specific
+     .chart-card--* modifier (dashboard bento grid), so each card's ambient
+     glow always matches that finding's/chart's own accent color. */
+  box-shadow: var(--shadow-card), 0 0 90px -35px var(--glow-color, var(--gold));
   transition: border-color 0.25s ease;
   overflow: hidden;
 }
