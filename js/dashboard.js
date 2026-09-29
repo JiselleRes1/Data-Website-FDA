@@ -205,6 +205,7 @@ function renderAll() {
 }
 
 function setGenreFilter(genre) {
+  playClick();
   state.filters.genre = genre;
   document.getElementById('filter-genre').value = genre;
   document.querySelectorAll('.gcard').forEach((c) => c.classList.toggle('active', c.dataset.genre === genre && genre !== ''));
@@ -217,6 +218,7 @@ function setupPillGroup(containerId, filterKey) {
   container.addEventListener('click', (e) => {
     const btn = e.target.closest('.pill');
     if (!btn) return;
+    playTick();
     container.querySelectorAll('.pill').forEach((p) => p.classList.remove('active'));
     btn.classList.add('active');
     state.filters[filterKey] = btn.dataset.value;
@@ -465,16 +467,19 @@ Promise.all([
   });
 
   setupSegmented('chart1-viewtype', (val) => {
+    playWhoosh();
     chart1ViewType = val;
     disposeChart('chart-1');
     renderBarChart(1, applyFilters());
   });
   setupSegmented('view-toggle', (val) => {
+    playTick();
     document.getElementById('leaderboard-view').hidden = val === 'table';
     document.getElementById('table-section').hidden = val !== 'table';
   });
 
   document.getElementById('reset-filters').addEventListener('click', () => {
+    playClick();
     document.getElementById('filter-language').value = '';
     document.querySelectorAll('#filter-decade .pill').forEach((p, i) => p.classList.toggle('active', i === 0));
     document.querySelectorAll('#filter-financial .pill').forEach((p, i) => p.classList.toggle('active', i === 0));
@@ -491,6 +496,7 @@ Promise.all([
   initTilt('.stat-tile, .chart-card, .faceoff-card, .leaderboard-card');
   initReveals();
   animateHeroLines('.hero h1');
+  initSoundToggle();
 }).catch((err) => {
   console.error('Failed to load dataset', err);
 });

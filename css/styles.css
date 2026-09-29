@@ -128,6 +128,24 @@ a:hover { text-decoration: underline; }
 }
 .site-nav .links a:hover { color: var(--text-primary); text-decoration: none; border-color: var(--border-strong); }
 .site-nav .links a.active { color: #17140f; background: var(--gold); }
+.sound-toggle {
+  width: 34px;
+  height: 34px;
+  margin-left: 0.4rem;
+  font-size: 1rem;
+  line-height: 1;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.sound-toggle:hover { border-color: var(--gold); }
+.sound-toggle.active { border-color: var(--gold); box-shadow: var(--glow-gold); }
 
 /* ===== Layout ===== */
 .page { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 6rem; }

@@ -204,6 +204,7 @@ Promise.all([
   initReveals();
   initTilt('.stat-tile, .chart-card');
   animateHeroLines('.hero h1');
+  initSoundToggle();
 }).catch((err) => {
   console.error('Failed to load dataset', err);
 });

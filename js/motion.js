@@ -103,4 +103,84 @@
   document.addEventListener('DOMContentLoaded', () => {
     ScrollTrigger.refresh();
   });
+
+  // ---- Synthesized UI sound effects (no audio files — generated with the
+  // Web Audio API, so there's nothing to license and nothing to load).
+  // Off by default; only ever plays in response to an actual click, never
+  // hover, and only after the user has explicitly turned it on. ----
+  let audioCtx = null;
+  let soundEnabled = localStorage.getItem('soundEnabled') === 'true';
+
+  function ensureAudioCtx() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    if (!audioCtx) audioCtx = new Ctx();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  // A short burst of filtered noise — the basis for every UI sound here
+  // (clicks, ticks, whooshes are all just this with different shaping).
+  function noiseBurst({ duration = 0.06, filterType = 'bandpass', freq = 2200, sweepTo = null, q = 4, gain = 0.16 }) {
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = filterType;
+    filter.Q.value = q;
+    filter.frequency.setValueAtTime(freq, ctx.currentTime);
+    if (sweepTo !== null) filter.frequency.exponentialRampToValueAtTime(sweepTo, ctx.currentTime + duration);
+
+    const gainNode = ctx.createGain();
+    gainNode.gain.setValueAtTime(gain, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+
+    source.connect(filter).connect(gainNode).connect(ctx.destination);
+    source.start();
+    source.stop(ctx.currentTime + duration);
+  }
+
+  // Camera-shutter-style click — genre picks, search results, reset.
+  window.playClick = function playClick() {
+    if (!soundEnabled) return;
+    noiseBurst({ duration: 0.045, filterType: 'bandpass', freq: 2800, q: 7, gain: 0.2 });
+  };
+  // Light sprocket-tick — pill/segmented toggles.
+  window.playTick = function playTick() {
+    if (!soundEnabled) return;
+    noiseBurst({ duration: 0.022, filterType: 'highpass', freq: 4500, q: 2, gain: 0.12 });
+  };
+  // Soft whoosh — the Bars/Wheel chart-view morph.
+  window.playWhoosh = function playWhoosh() {
+    if (!soundEnabled) return;
+    noiseBurst({ duration: 0.22, filterType: 'lowpass', freq: 3000, sweepTo: 250, q: 0.7, gain: 0.14 });
+  };
+
+  function updateSoundToggleUI() {
+    document.querySelectorAll('.sound-toggle').forEach((btn) => {
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+      btn.classList.toggle('active', soundEnabled);
+      btn.setAttribute('aria-label', soundEnabled ? 'Mute sound effects' : 'Enable sound effects');
+    });
+  }
+
+  window.initSoundToggle = function initSoundToggle() {
+    updateSoundToggleUI();
+    document.querySelectorAll('.sound-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        ensureAudioCtx();
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('soundEnabled', String(soundEnabled));
+        updateSoundToggleUI();
+        if (soundEnabled) playClick();
+      });
+    });
+  };
 })();
