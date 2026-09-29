@@ -745,10 +745,10 @@ table.data-table tbody tr:hover { background: rgba(232,185,62,0.06); }
     "wide wide";
   gap: 1.5rem;
 }
-.chart-card--hero { grid-area: hero; display: flex; flex-direction: column; }
-.chart-card--side1 { grid-area: side1; }
-.chart-card--side2 { grid-area: side2; }
-.chart-card--wide { grid-area: wide; }
+.chart-card--hero { grid-area: hero; display: flex; flex-direction: column; box-shadow: var(--shadow-card), 0 0 90px -35px var(--series-1); }
+.chart-card--side1 { grid-area: side1; box-shadow: var(--shadow-card), 0 0 90px -35px var(--series-3); }
+.chart-card--side2 { grid-area: side2; box-shadow: var(--shadow-card), 0 0 90px -35px var(--series-5); }
+.chart-card--wide { grid-area: wide; box-shadow: var(--shadow-card), 0 0 90px -35px var(--gold); }
 /* The hero card is stretched tall by the grid (it spans both side-card
    rows) — let its chart fill that height instead of leaving dead space
    below a fixed-height chart. */
