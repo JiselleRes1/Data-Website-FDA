@@ -536,10 +536,8 @@ table.data-table tbody tr:hover { background: rgba(232,185,62,0.06); }
 }
 .genre-picker {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.85rem;
-  overflow-x: auto;
-  padding-bottom: 0.75rem;
-  scroll-snap-type: x proximity;
 }
 .gcard {
   flex: 0 0 auto;
@@ -547,7 +545,6 @@ table.data-table tbody tr:hover { background: rgba(232,185,62,0.06); }
   height: 122px;
   perspective: 700px;
   cursor: pointer;
-  scroll-snap-align: start;
 }
 .gcard-inner {
   position: relative;
